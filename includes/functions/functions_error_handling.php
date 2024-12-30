@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright 2003-2024 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2024 Jan 11 New in v2.0.0-alpha1 $
+ * @version $Id: DrByte 2024 Oct 18 Modified in v2.1.0 $
  */
 if (!defined('IS_ADMIN_FLAG')) {
     exit('Invalid Access');
@@ -40,6 +40,8 @@ function zen_debug_error_handler($errno, $errstr, $errfile, $errline)
             $this_log_suffix = '.log';
             break;
         case E_DEPRECATED:
+            //@TODO: Remove this after we remove the use of the SID constant from html_output etc
+            if (str_contains($errstr, 'Constant SID is deprecated')) return true;
         case E_USER_DEPRECATED:
             $error_type = 'Deprecated';
             $this_log_suffix = '-deprecated.log';

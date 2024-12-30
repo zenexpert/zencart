@@ -3,7 +3,7 @@
  * @copyright Copyright 2003-2024 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2024 Sep 04 Modified in v2.1.0-beta1 $
+ * @version $Id: Paul Williams 2024 Oct 13 Modified in v2.1.0 $
  */
 
 ////
@@ -139,14 +139,28 @@ function zen_catalog_base_link($connection = '')
     if ($alt) {
       $image .= ' title="' . zen_output_string($alt) . '"';
     }
-    if ($width) {
-      $image .= ' width="' . $width . '"';
+
+    $styles = '';
+
+    if ($width !== '' && !str_contains($params, 'width:')) {
+        $width = trim($width);
+        $styles .= 'width:' . $width . (!str_ends_with($width, '%') ? 'px' : '') . '; ';
     }
-    if ($height) {
-      $image .= ' height="' . $height . '"';
+
+    if ($height !== '' && !str_contains($params, 'height:')) {
+        $height = trim($height);
+        $styles .= 'height:' . $height . (!str_ends_with($height, '%') ? 'px' : '') . '; ';
     }
+
+    if (str_contains($params, 'style=')) {
+        $params = str_replace('style="', 'style="' . $styles, $params);
+    } else {
+        $params .= ' style="' . $styles . '"';
+    }
+
+
     if ($params) {
-      $image .= ' ' . $params;
+      $image .= ' ' . trim($params);
     }
     $image .= '>';
 
@@ -275,7 +289,7 @@ function zen_icon(string $icon, ?string $tooltip = null, string $size = '', bool
         }
 		$param = 'style="width:' . $width . ';"';
 	} else {
-		$param = NULL;
+		$param = '';
 	}
     return zen_image(DIR_WS_IMAGES . $image, '', '', $height, $param);
   }
