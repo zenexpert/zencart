@@ -15,7 +15,6 @@ class PluginsLFITest extends zcFeatureTestCaseAdmin
     public function testPluginLFI()
     {
         // note probably need to make the login a separate method
-        // would be nice if we could use Laravel actingAs
         $this->runCustomSeeder('StoreWizardSeeder');
         $this->runCustomSeeder('DisplayLogsSeeder');
         $this->browser->request('GET', HTTP_SERVER . '/admin');
