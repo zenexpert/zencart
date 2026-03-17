@@ -25,8 +25,8 @@ trait InteractsWithPlugins
     /** @var string catalog, admin, or Installer */
     protected string $zcPluginContext;
 
-    /** @var string working directory of currently installed version */
-    protected string $pluginManagerInstalledVersionDirectory;
+    /** @var ?string working directory of currently installed version; null if not installed */
+    protected ?string $pluginManagerInstalledVersionDirectory;
 
     /** @var string will be null if no 'catalog' dir present (no catalog features) */
     protected string $zcPluginCatalogPath;
@@ -58,6 +58,11 @@ trait InteractsWithPlugins
         global $db;
         $plugin_manager = new PluginManager(new PluginControlRepository($db), new PluginControlVersionRepository($db));
         $this->pluginManagerInstalledVersionDirectory = $plugin_manager->getPluginVersionDirectory($this->zcPluginDirName, $plugin_manager->getInstalledPlugins());
+
+        if ($this->pluginManagerInstalledVersionDirectory === null) {
+            // plugin not installed, so we won't be able to determine the installed version's path or whether we're in the context of an installed version's files or not, so just return here.
+            return;
+        }
 
         $installedPluginPath = rtrim(str_replace(DIR_FS_CATALOG, '', $this->pluginManagerInstalledVersionDirectory), '/');
         if ($this->zcPluginContext === 'catalog') {
