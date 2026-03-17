@@ -189,7 +189,7 @@ if ($action !== '') {
                 }
             }
             if ($skip_featured === true) {
-                zen_redirect(zen_href_link(FILENAME_FEATURED_CATEGORIES, $current_page . (!empty($check_featured->fields['featured_categories_id']) ? 'fID=' . (int)$check_featured->fields['featured_categories_id'] : '' . (isset($_GET['search']) ? '&search=' . $_GET['search'] : ''))));
+                zen_redirect(zen_href_link(FILENAME_FEATURED_CATEGORIES, $current_page . (!empty($check_featured->fields['featured_categories_id']) ? 'fID=' . (int)$check_featured->fields['featured_categories_id'] : (isset($_GET['search']) ? '&search=' . $_GET['search'] : ''))));
             } else { // category id is valid
                 zen_redirect(zen_href_link(FILENAME_FEATURED_CATEGORIES, $current_page . 'action=new' . '&preID=' . (int)$_POST['pre_add_categories_id']));
             }
@@ -304,7 +304,7 @@ if ($action !== '') {
                         <div class="form-group">
                             <?php echo zen_draw_label(TEXT_FEATURED_CATEGORY, 'categories_id', 'class="col-sm-3 control-label"'); ?>
                             <div class="col-sm-9 col-md-6">
-                               <?php echo  zen_draw_pulldown_categories_having_products('categories_id', 'required size="15" class="form-control"', $featured_array, true,true,false,); ?>
+                               <?php echo zen_draw_pulldown_categories_having_products('categories_id', 'required size="15" class="form-control"', $featured_array, true, true, false); ?>
                             </div>
                         </div>
                     <?php } ?>
@@ -573,4 +573,3 @@ if ($action !== '') {
 </html>
 <?php
 require DIR_WS_INCLUDES . 'application_bottom.php';
-
