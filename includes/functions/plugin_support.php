@@ -72,6 +72,13 @@ function plugin_version_check_for_updates(mixed $plugin_file_id = 0, string $ver
         $data = json_decode($data, true);
     }
 
+    if (!is_array($data) || isset($data['error']) || !isset($data[0])) {
+        if (LOG_PLUGIN_VERSIONCHECK_FAILURES) {
+            error_log('Version Server response error when checking plugin versions: ' . print_r(!empty($data) ? $data : 'null', true));
+        }
+        return false;
+    }
+
     if (strcmp($data[0]['latest_plugin_version'], $version_string_to_compare) > 0) {
         $new_version_available = true;
     }
