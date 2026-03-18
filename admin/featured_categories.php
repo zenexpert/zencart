@@ -297,7 +297,7 @@ if ($action !== '') {
                             <p class="col-sm-3 control-label"><?php echo TEXT_FEATURED_CATEGORY; ?></p>
                             <div class="col-sm-9 col-md-6">
                                 <span class="form-control" style="border:none; -webkit-box-shadow: none">
-                                <?php echo 'ID#' . $preID . ': ' . zen_clean_html(zen_get_categories_name($preID)); ?></span>
+                                <?php echo 'ID#' . $preID . ': ' . zen_clean_html(zen_get_category_name($preID)); ?></span>
                             </div>
                         </div>
                     <?php } else { ?>
