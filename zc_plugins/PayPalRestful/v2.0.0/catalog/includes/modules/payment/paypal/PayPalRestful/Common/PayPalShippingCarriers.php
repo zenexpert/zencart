@@ -2,7 +2,7 @@
 /**
  * Package Tracking Shipper List for the PayPalRestful (paypalr) Payment Module
  *
- * @copyright Copyright 2023-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  *
  * Last updated: v1.2.0

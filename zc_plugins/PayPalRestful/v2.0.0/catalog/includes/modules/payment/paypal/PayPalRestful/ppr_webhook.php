@@ -3,9 +3,9 @@
  * Controller for incoming subscribed PayPal Webhook notifications
  * DEPENDS ON existence of /includes/auto_loaders/webhook.core.php which was added to Zen Cart in v2.2.0
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte June 2025 $
+ * @version $Id: lat9 2026 Mar 17 New in v2.2.1 $
  *
  * Last updated: v2.0.0
  *

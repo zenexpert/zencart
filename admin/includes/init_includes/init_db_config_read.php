@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: Zcwilt 2020 Jul 07 Modified in v1.5.8-alpha $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
 use Zencart\DbRepositories\ConfigurationRepository;

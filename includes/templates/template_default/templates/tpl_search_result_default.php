@@ -8,7 +8,7 @@
  * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: Scott Wilson 2025 Oct 03 Modified in v2.2.0 $
+ * @version $Id: lat9 2026 Feb 19 Modified in v2.2.1 $
  */
 ?>
 <div class="centerColumn" id="searchResultsDefault">

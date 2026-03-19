@@ -5,7 +5,7 @@
  *
  * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id:  New in v2.2.0 $
+ * @version $Id: lat9 2026 Mar 17 New in v2.2.1 $
  * @since ZC v2.2.0
  */
 if (!defined('IS_ADMIN_FLAG')) {

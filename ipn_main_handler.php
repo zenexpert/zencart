@@ -3,10 +3,10 @@
 /**
  * ipn_main_handler.php callback handler for PayPal IPN notifications
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 25 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 13 Modified in v2.2.1 $
  *
  * @var $currencies currencies
  * @var $db queryFactoryResult|queryFactory
