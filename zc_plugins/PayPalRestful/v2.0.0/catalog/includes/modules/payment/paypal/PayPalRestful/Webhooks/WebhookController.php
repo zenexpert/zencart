@@ -26,8 +26,8 @@ class WebhookController
 
         // Inspect and collect webhook details
         $request_method = $_SERVER['REQUEST_METHOD'];
-        $request_headers = getallheaders();
-        $request_body = file_get_contents('php://input');
+        $request_headers = getallheaders() ?: [];
+        $request_body = file_get_contents('php://input') ?: '';
         $json_body = json_decode($request_body, true);
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
         $event = $json_body['event_type'] ?? '(event not determined)';
