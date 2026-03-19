@@ -33,6 +33,18 @@ $autoLoadConfig[0][] = [
     'loadFile' => 'class.phpmailer.php',
 ];
 /**
+ * Breakpoint 5.
+ *
+ * $zcDate = new zcDate(); ... will be re-initialized when/if the require_languages.php module is run.
+ *
+ */
+//- zcDate class loaded via psr4Autoload.php
+$autoLoadConfig[5][] = [
+    'autoType' => 'classInstantiate',
+    'className' => 'zcDate',
+    'objectName' => 'zcDate',
+];
+/**
  * Breakpoint 30.
  *
  * $zc_cache = new cache();
