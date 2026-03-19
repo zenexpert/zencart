@@ -303,7 +303,7 @@ systemChecks:
     methods:
       checkHttpsRequest:
 
-  checkDBVersion220:
+  checkDBVersion221:
     runLevel: dbVersion
     errorLevel: WARN
     version: '2.2.1'
@@ -329,6 +329,10 @@ systemChecks:
           - checkType: fieldSchema
             tableName: tax_rates_description
             fieldName: tax_description
+            fieldCheck: Exists
+          - checkType: fieldSchema
+            tableName: orders_status
+            fieldName: orders_status_color_code
             fieldCheck: Exists
 
   checkDBVersion210:
