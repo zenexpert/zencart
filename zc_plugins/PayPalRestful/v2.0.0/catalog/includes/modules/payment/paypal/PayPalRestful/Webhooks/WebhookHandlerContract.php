@@ -26,7 +26,8 @@ abstract class WebhookHandlerContract
     protected Logger $log;
 
     protected PayPalRestfulApi $ppr;
-    protected $paymentModule; // TODO: we can probably declare this as an instance of \paypalr
+    protected \paypalr $paymentModule;
+
 
     public function __construct(WebhookObject $webhook)
     {
