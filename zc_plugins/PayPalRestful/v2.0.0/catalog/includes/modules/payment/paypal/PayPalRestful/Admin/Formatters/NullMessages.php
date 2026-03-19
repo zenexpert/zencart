@@ -3,9 +3,9 @@
  * A null-object class that simulates messageStack messages triggered by webhooks in code that is shared by the
  * admin_notifications method of the PayPal Restful payment module.
  *
- * @copyright Copyright 2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: lat9 2023 Nov 16 Modified in v2.0.0 $
+ * @version $Id: lat9 2026 Mar 17 New in v2.2.1 $
  *
  * Last updated: v1.2.2
  */

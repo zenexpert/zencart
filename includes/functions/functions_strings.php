@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: John 2025 Oct 22 Modified in v2.2.0 $
+ * @version $Id: piloujp 2026 Mar 19 Modified in v2.2.1 $
  */
 
 /**

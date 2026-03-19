@@ -8,7 +8,7 @@
  * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: lat9 2026 Feb 19 Modified in v2.2.0-alpha $
+ * @version $Id: lat9 2026 Feb 19 New in v2.2.1 $
  */
 if ($search_result_number_of_rows !== 0) {
     return;

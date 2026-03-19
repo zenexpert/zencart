@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2023 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: pRose on charmes 2023 Jan 09 Modified in v1.5.8a $
+ * @version $Id: DrByte 2025 Dec 01 Modified in v2.2.1 $
  */
 $version_check_index = true;
 require('includes/application_top.php');

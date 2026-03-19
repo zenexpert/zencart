@@ -2,9 +2,9 @@
 /**
  * A data class for Amount types used by the PayPalRestful (paypalr) Payment Module
  *
- * @copyright Copyright 2023 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: lat9 2023 Nov 16 Modified in v2.0.0 $
+ * @version $Id: lat9 2026 Mar 17 New in v2.2.1 $
  *
  * Last updated: v2.0.0
  */

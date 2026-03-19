@@ -5,9 +5,9 @@ use http\Exception\BadQueryStringException;
 /*
  * Communication-related functions, such as for making CURL requests
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 30 New in v2.2.0 $
+ * @version $Id: DrByte 2025 Dec 13 Modified in v2.2.1 $
  */
 
 /**
