@@ -385,11 +385,7 @@ function zen_clean_html(string $clean_it, array|string $extraTags = ''): string
     // remove any embedded javascript
     $clean_it = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $clean_it ?? '');
 
-    $clean_it = preg_replace('/\r/', ' ', $clean_it);
-    $clean_it = preg_replace('/\t/', ' ', $clean_it);
-    $clean_it = preg_replace('/\n/', ' ', $clean_it);
-
-    $clean_it = nl2br($clean_it);
+    $clean_it = str_replace(["\r", "\t", "\n"], ' ', $clean_it);
 
     // update breaks with a space for text displays in all listings with descriptions
     $clean_it = preg_replace('~(<br ?/?>|</?p>)~', ' ', $clean_it);
