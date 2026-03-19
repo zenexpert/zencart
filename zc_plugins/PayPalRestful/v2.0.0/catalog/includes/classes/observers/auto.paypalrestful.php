@@ -14,12 +14,10 @@ use PayPalRestful\Api\Data\CountryCodes;
 use PayPalRestful\Api\PayPalRestfulApi;
 use PayPalRestful\Zc2Pp\Amount;
 use Zencart\Traits\InteractsWithPlugins;
-use Zencart\Traits\ObserverManager;
 
-class zcObserverPaypalrestful
+class zcObserverPaypalrestful extends \base
 {
     use InteractsWithPlugins;
-    use ObserverManager;
 
     protected array $lastOrderValues = [];
     protected array $orderTotalChanges = [];
