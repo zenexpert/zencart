@@ -174,9 +174,7 @@
 
             // bof: body of the email clean-up
             // clean up &amp; and && from email text
-            $email_text = preg_replace('/(&amp;)+/', '&amp;', $email_text);
-            $email_text = preg_replace('/(&amp;)+/', '&', $email_text);
-            $email_text = preg_replace('/&{2,}/', '&', $email_text);
+            $email_text = preg_replace('/((&amp;)|&)+/', '&', $email_text);
 
             // clean up currencies for text emails
             if (defined('CURRENCIES_TRANSLATIONS') && !empty(CURRENCIES_TRANSLATIONS)) {
