@@ -20,7 +20,7 @@
         "source": "https://zen-cart.com/getit",
         "docs": "https://docs.zen-cart.com"
     },
-    "_comment": "compatible with PHP 8.2-8.4",
+    "_comment": "compatible with PHP 8.2-8.5",
     "require": {
         "php": "^8.2",
         "ext-curl": "*",
