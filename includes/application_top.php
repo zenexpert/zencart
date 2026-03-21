@@ -130,15 +130,12 @@ if (!$contaminated) {
  */
 if (!empty($_SERVER['QUERY_STRING'])) {
 
-    // identify the current page early
-    $current_main_page = isset($_GET['main_page']) ? (string)$_GET['main_page'] : 'index';
-
     // define pages that need long query strings
     $long_query_pages = ['checkout_process', 'checkout_payment', 'checkout', 'checkout_one', 'checkout_one_confirmation'];
 
     // set a dynamic length limit
     // allow 2048 characters for payment pages, but keep the strict 256 for everything else
-    $max_length = in_array($current_main_page, $long_query_pages) ? 2048 : 256;
+    $max_length = in_array($_GET['main_page'] ?? '', $long_query_pages) ? 2048 : 256;
 
     // cap query string length (prevents buffer overflow/fuzzing)
     if (strlen($_SERVER['QUERY_STRING']) > $max_length) {
