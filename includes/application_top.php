@@ -128,7 +128,7 @@ if (!$contaminated) {
  * reject suspicious non-ASCII characters
  * allows standard printable ASCII but flags common exploit symbols
  */
-if (!empty($_SERVER['QUERY_STRING'])) {
+if (!$contaminated && !empty($_SERVER['QUERY_STRING'])) {
 
     // define pages that need long query strings
     $long_query_pages = ['checkout_process', 'checkout_payment', 'checkout', 'checkout_one', 'checkout_one_confirmation'];
