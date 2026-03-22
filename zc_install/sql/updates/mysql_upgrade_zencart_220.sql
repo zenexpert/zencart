@@ -153,6 +153,7 @@ UPDATE configuration SET configuration_description = 'Do you want to display the
 UPDATE configuration SET configuration_description = 'Do you want to display the Product Price/Add to Cart?<br>0 - Not displayed.<br>n - Displayed, with the number n defining the display order relative to similar options on the product listing page.' WHERE configuration_key = 'PRODUCT_LIST_PRICE' LIMIT 1;
 UPDATE configuration SET configuration_description = 'Do you want to display the Product Quantity?<br>0 - Not displayed.<br>n - Displayed, with the number n defining the display order relative to similar options on the product listing page.' WHERE configuration_key = 'PRODUCT_LIST_QUANTITY' LIMIT 1;
 UPDATE configuration SET configuration_description = 'Do you want to display the Product Weight?<br>0 - Not displayed.<br>n - Displayed, with the number n defining the display order relative to similar options on the product listing page.' WHERE configuration_key = 'PRODUCT_LIST_WEIGHT' LIMIT 1;
+UPDATE configuration SET configuration_description = 'Featured Products And Categories Columns per Row' WHERE configuration_key = 'SHOW_PRODUCT_INFO_COLUMNS_FEATURED_PRODUCTS';
 
 #PROGRESS_FEEDBACK:!TEXT=Setting default order-status colors...
 UPDATE orders_status SET orders_status_color_code = '#f0ad4e' WHERE orders_status_id = 1 AND orders_status_color_code IS NULL;
