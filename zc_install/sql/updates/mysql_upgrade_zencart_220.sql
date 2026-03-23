@@ -173,7 +173,33 @@ SELECT project_version_key, project_version_major, project_version_minor, projec
 FROM project_version;
 
 ## Now set to new version
-UPDATE project_version SET project_version_major='2', project_version_minor='2.1', project_version_patch1='', project_version_patch1_source='', project_version_patch2='', project_version_patch2_source='', project_version_comment='Version Update', project_version_date_applied=now() WHERE project_version_key = 'Zen-Cart Main';
-UPDATE project_version SET project_version_major='2', project_version_minor='2.0', project_version_patch1='', project_version_patch1_source='', project_version_patch2='', project_version_patch2_source='', project_version_comment='Version Update', project_version_date_applied=now() WHERE project_version_key = 'Zen-Cart Database';
+SET @VERSION_MAJOR = '2';
+SET @VERSION_MINOR = '2.1';
+SET @DB_MAJOR = '2';
+SET @DB_MINOR = '2.0';
+
+UPDATE project_version
+SET
+    project_version_major = @VERSION_MAJOR,
+    project_version_minor = @VERSION_MINOR,
+    project_version_patch1 = '',
+    project_version_patch1_source = '',
+    project_version_patch2 = '',
+    project_version_patch2_source = '',
+    project_version_comment = CONCAT('Version Update to ', @VERSION_MAJOR, '.', @VERSION_MINOR),
+    project_version_date_applied = now()
+WHERE project_version_key = 'Zen-Cart Main';
+
+UPDATE project_version 
+SET 
+    project_version_major = @DB_MAJOR,
+    project_version_minor = @DB_MINOR,
+    project_version_patch1 = '',
+    project_version_patch1_source = '',
+    project_version_patch2 = '',
+    project_version_patch2_source = '',
+    project_version_comment = CONCAT('Version Update to ', @DB_MAJOR, '.', @DB_MINOR),
+    project_version_date_applied = now() 
+WHERE project_version_key = 'Zen-Cart Database';
 
 ##### END OF UPGRADE SCRIPT
