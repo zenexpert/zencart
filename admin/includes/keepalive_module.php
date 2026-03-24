@@ -34,7 +34,7 @@ if ((int)$timeoutAfter < 30) $timeoutAfter = 1440;
 //$timeoutAfter = 15;
 //$mouseDebounce = 10;
 ?>
-<style title="jAlert">
+<style id="jAlert-css">
 .jAlert {font-size: 1.5rem;}
 .ja_btn {font-size: 1.5rem; padding: 15px !important;}
 </style>
@@ -60,7 +60,7 @@ jQuery(function(){
             'title': '<?php echo addslashes(TEXT_TIMEOUT_ARE_YOU_STILL_THERE); ?>',
             'content': '<b><?php echo addslashes(TEXT_TIMEOUT_WILL_LOGOUT_SOON); ?> <?php echo addslashes(TEXT_TIMEOUT_TIME_REMAINING); ?> <span class="jTimeout_Countdown">' + seconds + '</span> <?php echo addslashes(TEXT_TIMEOUT_SECONDS); ?></b>',
             'theme': 'red',
-            noPadContent: false, // Explicitly enable padding
+            'noPadContent': false, // Explicitly enable padding
             'closeBtn': false,
             'onOpen': function (alert) {
                 timeout.startPriorCountdown(alert.find('.jTimeout_Countdown'));
@@ -95,7 +95,7 @@ jQuery(function(){
             'title': '<?php echo addslashes(TEXT_TIMEOUT_TIMED_OUT_TITLE); ?>',
             'content': '<b><?php echo addslashes(TEXT_TIMEOUT_TIMED_OUT_MESSAGE); ?></b>',
             'theme': 'red',
-            noPadContent: false, // Explicitly enable padding
+            'noPadContent': false, // Explicitly enable padding
             'btns': {
                 'text': '<?php echo addslashes(TEXT_TIMEOUT_LOGIN_AGAIN); ?>',
                 'href': timeout.options.loginUrl,
