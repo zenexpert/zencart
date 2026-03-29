@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * version.php
  * Defines the project version details
