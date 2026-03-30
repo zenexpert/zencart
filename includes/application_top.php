@@ -124,19 +124,27 @@ if (!$contaminated) {
 }
 
 /**
+ * reject long query strings
  * reject suspicious non-ASCII characters
  * allows standard printable ASCII but flags common exploit symbols
  */
-if (!empty($_SERVER['QUERY_STRING'])) {
+if (!$contaminated && !empty($_SERVER['QUERY_STRING'])) {
+
+    // define pages that need long query strings
+    $long_query_pages = ['checkout_process', 'checkout_payment', 'checkout', 'checkout_one', 'checkout_one_confirmation'];
+
+    // set a dynamic length limit
+    // allow 2048 characters for payment pages, but keep the strict 256 for everything else
+    $max_length = in_array($_GET['main_page'] ?? '', $long_query_pages) ? 2048 : 256;
+
+    // cap query string length (prevents buffer overflow/fuzzing)
+    if (strlen($_SERVER['QUERY_STRING']) > $max_length) {
+        $contaminated = true;
+    }
 
     // check for the specific '¤' (%C2%A4) or characters outside standard range
     // allow basic printable ASCII but specifically target high-bit "junk"
     if (preg_match('/[\x00-\x1F\x7F-\xFF]/', $_SERVER['QUERY_STRING'])) {
-        $contaminated = true;
-    }
-
-    // cap query string length (prevents buffer overflow/fuzzing)
-    if (strlen($_SERVER['QUERY_STRING']) > 256) {
         $contaminated = true;
     }
 }
