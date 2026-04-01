@@ -14,7 +14,7 @@ if (!function_exists('zc_test_config_catalog_path')) {
     }
 }
 
-if (!function_exists('zc_test_config_database_name')) {
+if (!function_exists('zc_test_config_worker_token')) {
     function zc_test_config_worker_token(): ?string
     {
         $worker = getenv('ZC_TEST_WORKER');

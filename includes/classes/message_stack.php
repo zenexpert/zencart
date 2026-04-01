@@ -106,6 +106,8 @@ class messageStack extends base
                 $message['type'] ?? 'error'
             );
         }
+
+        $_SESSION['messageToStack'] = [];
     }
 
     public function reset(): void

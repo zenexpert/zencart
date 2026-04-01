@@ -37,6 +37,15 @@ Environment overrides:
 EOF
 }
 
+validate_database_name() {
+    local database_name="$1"
+
+    if ! [[ "$database_name" =~ ^[A-Za-z0-9_]+$ ]]; then
+        echo "Database name must contain only letters, numbers, and underscores: $database_name" >&2
+        exit 2
+    fi
+}
+
 while [ "$#" -gt 0 ]; do
     case "$1" in
         --base)
@@ -76,6 +85,8 @@ if [ -z "$BASE_DATABASE" ]; then
     exit 2
 fi
 
+validate_database_name "$BASE_DATABASE"
+
 if [ "$DRY_RUN" != "1" ] && ! command -v mysql >/dev/null 2>&1; then
     echo "mysql client not found in PATH." >&2
     exit 127
@@ -89,6 +100,10 @@ fi
 
 for worker in $(seq 1 "$WORKER_COUNT"); do
     DATABASES+=("${BASE_DATABASE}_${worker}")
+done
+
+for database in "${DATABASES[@]}"; do
+    validate_database_name "$database"
 done
 
 if [ "$DRY_RUN" = "1" ]; then

@@ -193,6 +193,22 @@ class TestFrameworkRunnersTest extends TestCase
         $this->assertContains('Usage: prepare-worker-databases.sh [--base NAME] [--workers COUNT] [--skip-base] [--dry-run]', $output);
     }
 
+    public function testPrepareWorkerDatabasesRejectsInvalidBaseDatabaseName(): void
+    {
+        $script = $this->rootPath . '/not_for_release/testFramework/prepare-worker-databases.sh';
+        $command = sprintf(
+            'ZC_TEST_ENV_FILE=%s bash %s --dry-run --base %s',
+            escapeshellarg('/dev/null'),
+            escapeshellarg($script),
+            escapeshellarg('bad`name')
+        );
+
+        exec($command . ' 2>&1', $output, $exitCode);
+
+        $this->assertSame(2, $exitCode, implode(PHP_EOL, $output));
+        $this->assertContains('Database name must contain only letters, numbers, and underscores: bad`name', $output);
+    }
+
     public function testPrepareWorkerDatabasesDryRunUsesEnvironmentOverrides(): void
     {
         $script = $this->rootPath . '/not_for_release/testFramework/prepare-worker-databases.sh';
