@@ -2,10 +2,10 @@
 /**
  * Payment Class.
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Jan 25 Modified in v2.2.1 $
  */
 use Zencart\FileSystem\FileSystem;
 use Zencart\ResourceLoaders\ModuleFinder;
@@ -37,7 +37,7 @@ class payment
     public string $form_action_url;
     /**
      * $modules array of payment module names
-     * @var array 
+     * @var array
      */
     public array $modules;
     /**
@@ -71,7 +71,7 @@ class payment
         // and for those provided by zc_plugins.  Note that any module provided by a
         // zc_plugin overrides the processing present in any 'base' file.
         //
-        $moduleFinder = new ModuleFinder('payment', new Filesystem());
+        $moduleFinder = new ModuleFinder('payment', new FileSystem());
         $modules_found = $moduleFinder->findFromFilesystem($installedPlugins);
 
         $include_modules = [];

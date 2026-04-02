@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: Scott Wilson 2024 Nov 23 Modified in v2.2.0 $
+ * @version $Id: lat9 2026 Mar 17 Modified in v2.2.1 $
 */
 
 $define = [
@@ -50,6 +50,7 @@ $define = [
     'ERROR_NOT_FOUND_IN_SQL_FUNCTIONS_MAP' => 'Check your SQL statement. A SQL function map cannot be found for : ',
     'ERROR_INVALID_SYNTAX' => 'The table cannot be identified as syntax is invalid in: ',
     'ERROR_SQL_PATCH' => 'Error while processing SQL install. ',
+    'WARNING_NONENCAPSULATED_REMOVAL' => '<b>Note:</b> Installing this plugin will result in files provided by a non-encapsulated version (if present) being <b>permanently</b> removed!',
 ];
 
 return $define;

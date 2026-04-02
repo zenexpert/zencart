@@ -3,9 +3,9 @@
  * Functions related to products
  * Note: Several product-related lookup functions are located in functions_lookups.php
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 29 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Jan 14 Modified in v2.2.1 $
  */
 
 /**
@@ -270,6 +270,10 @@ function zen_set_product_master_categories_id($product_id, $category_id): void
 }
 
 /**
+ * Returns all the category IDs that the product is assigned to, including its master_categories_id.
+ *
+ * To get only the linked categories (without its primary/master), pass the product's master_categories_id to the $exclude array parameter.
+ *
  * @param int $product_id
  * @param array $exclude
  * @return array of categories_id

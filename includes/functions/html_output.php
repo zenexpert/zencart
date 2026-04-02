@@ -3,10 +3,10 @@
  * html_output.php
  * HTML-generating functions used throughout the core
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Jan 23 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
 /**
@@ -189,6 +189,7 @@ function zen_image_OLD($src, $title = '', $width = '', $height = '', $parameters
  * HTML image wrapper function
  * @since ZC v1.0.3
  */
+if (!function_exists('zen_image')) {
 function zen_image($src, $title = '', $width = '', $height = '', $parameters = '')
 {
     global $template_dir, $zco_notifier;
@@ -300,6 +301,7 @@ function zen_image($src, $title = '', $width = '', $height = '', $parameters = '
 
     return $image;
 }
+}
 
 /**
  * The HTML form submit button wrapper function
@@ -356,7 +358,7 @@ function zen_draw_button($text = '', $added_classes = '', $id = '', $parameters 
     // legacy support
     // remove .gif etc suffix if any
     $text = preg_replace('/\.(png|gif|jpe?g|webp)$/', '', $text);
-    $text = str_replace('_', ' ', Illuminate\Support\Str::title($text));
+    $text = str_replace('_', ' ', ucwords((string)$text));
 
     $classes = '';
     // optionally force something like 'btn' into the current template's buttons by defining a constant for the template:

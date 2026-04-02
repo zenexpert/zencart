@@ -14,9 +14,9 @@
  * This fires at AutoLoader point 175, so all previously-processed system dependencies are in place.
  * If you need an observer class to fire at a much earlier point so it fires before other system processes, you'll need to add your own auto_loaders/config.yyyyy.php file with relevant rules to load those observers.
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 19 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
 use Zencart\FileSystem\FileSystem;
@@ -26,13 +26,13 @@ if (!defined('IS_ADMIN_FLAG')) {
 }
 
 $observersMain = (new FileSystem)->listFilesFromDirectory(DIR_WS_CLASSES . 'observers/', '~(^(auto\.|Auto[A-Z]).*\.php$)~');
-$observersMain = collect($observersMain)->map(fn($item, $key) => DIR_WS_CLASSES . 'observers/' . $item)->toArray();
+$observersMain = array_map(static fn($item) => DIR_WS_CLASSES . 'observers/' . $item, $observersMain);
 $context = IS_ADMIN_FLAG ? 'admin' : 'catalog';
 $observersPlugins = [];
 foreach ($installedPlugins as $plugin) {
     $path = DIR_FS_CATALOG . 'zc_plugins/' . $plugin['unique_key'] . '/' . $plugin['version'] . '/' . $context . '/' . DIR_WS_CLASSES . 'observers/';
     $observersPlugin = (new FileSystem)->listFilesFromDirectory($path, '~(^(auto\.|Auto[A-Z]).*\.php$)~');
-    $observersPlugin = collect($observersPlugin)->map(fn($item, $key) => $path . $item)->toArray();
+    $observersPlugin = array_map(static fn($item) => $path . $item, $observersPlugin);
     $observersPlugins = array_merge($observersPlugins, $observersPlugin);
 }
 $observers = array_merge($observersPlugins, $observersMain);

@@ -1,7 +1,7 @@
 #
-# @copyright Copyright 2003-2025 Zen Cart Development Team
+# @copyright Copyright 2003-2026 Zen Cart Development Team
 # @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-# @version $Id: DrByte 2025 Aug 15 Modified in v2.2.0 $
+# @version $Id: Scott Wilson 2026 Mar 19 Modified in v2.2.1 $
 #
 
 systemChecks:
@@ -39,15 +39,15 @@ systemChecks:
       checkPhpVersionMin:
         method: checkPhpVersion
         parameters:
-          version: 8.0.2
+          version: 8.2.0
           versionTest: ge
-          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MIN, '8.0') . PHP_EOL; ?>
+          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MIN, '8.2') . PHP_EOL; ?>
       checkPhpVersionMax:
         method: checkPhpVersion
         parameters:
           version: 8.6
           versionTest: lt
-          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MAX, '8.4.x') . PHP_EOL; ?>
+          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MAX, '8.5.x') . PHP_EOL; ?>
   checkPhpVersionRecommendation:
     runLevel: always
     errorLevel: WARN
@@ -329,6 +329,10 @@ systemChecks:
           - checkType: fieldSchema
             tableName: tax_rates_description
             fieldName: tax_description
+            fieldCheck: Exists
+          - checkType: fieldSchema
+            tableName: orders_status
+            fieldName: orders_status_color_code
             fieldCheck: Exists
 
   checkDBVersion210:

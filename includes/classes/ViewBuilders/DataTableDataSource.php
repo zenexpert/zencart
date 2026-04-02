@@ -1,15 +1,13 @@
 <?php declare(strict_types=1);
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
 namespace Zencart\ViewBuilders;
 
-use Illuminate\Database\Eloquent\Builder;
 use Zencart\Request\Request;
-use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Zencart\Traits\NotifierManager;
 
 /**
@@ -30,12 +28,12 @@ abstract class DataTableDataSource
     /**
      * @since ZC v1.5.8
      */
-    abstract protected function buildInitialQuery() : Builder;
+    abstract protected function buildInitialQuery();
 
     /**
      * @since ZC v1.5.8
      */
-    public function processRequest(Request $request) : Builder
+    public function processRequest(Request $request)
     {
         $query = $this->buildInitialQuery($request);
         $this->notify('NOTIFY_DATASOURCE_PROCESSREQUEST', [], $query);
@@ -45,17 +43,33 @@ abstract class DataTableDataSource
     /**
      * @since ZC v1.5.8
      */
-    public function processQuery(Builder $query) : Paginator
+    public function processQuery($query): NativePaginator
     {
-        if ($this->tableDefinition->isPaginated())
-        {
-            //var_dump(request()->input('page'));die('foo');
-            $results = $query->paginate($this->tableDefinition->getParameter('maxRowCount'), '*', 'page', isset($_GET['page']) ? (int)$_GET['page'] :  1);
-            //var_dump($results);die();
-        } else {
-            $results = $query->paginate(100000, '*', 'page', isset($_GET['page']) ? (int)$_GET['page'] :  1); // icwtodo @todo bit of a hack here to force the return type
+        $maxRows = $this->tableDefinition->isPaginated()
+            ? (int)$this->tableDefinition->getParameter('maxRowCount')
+            : 100000;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) {
+            $page = 1;
         }
-        return $results;
+
+        if (is_array($query)) {
+            $total = count($query);
+            $offset = ($page - 1) * $maxRows;
+            if ($offset < 0) {
+                $offset = 0;
+            }
+            $slice = array_slice($query, $offset, $maxRows);
+            return new NativePaginator($slice, $total, $maxRows, $page, 'page');
+        }
+
+        if (is_object($query) && method_exists($query, 'paginate')) {
+            /** @var NativePaginator $results */
+            $results = $query->paginate($maxRows, '*', 'page', $page);
+            return $results;
+        }
+
+        return new NativePaginator([], 0, $maxRows, $page, 'page');
     }
 
     /**

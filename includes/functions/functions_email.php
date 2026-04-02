@@ -4,10 +4,10 @@
      * Processes all outbound email from Zen Cart
      * Hooks into phpMailer class for actual email encoding and sending
      *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
      * @copyright Portions Copyright 2003 osCommerce
      * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-     * @version $Id: DrByte 2025 Oct 15 Modified in v2.2.0 $
+     * @version $Id: piloujp 2026 Mar 19 Modified in v2.2.1 $
      */
 
     use PHPMailer\PHPMailer\PHPMailer;
@@ -174,9 +174,7 @@
 
             // bof: body of the email clean-up
             // clean up &amp; and && from email text
-            $email_text = preg_replace('/(&amp;)+/', '&amp;', $email_text);
-            $email_text = preg_replace('/(&amp;)+/', '&', $email_text);
-            $email_text = preg_replace('/&{2,}/', '&', $email_text);
+            $email_text = preg_replace('/((&amp;)|&)+/', '&', $email_text);
 
             // clean up currencies for text emails
             if (defined('CURRENCIES_TRANSLATIONS') && !empty(CURRENCIES_TRANSLATIONS)) {

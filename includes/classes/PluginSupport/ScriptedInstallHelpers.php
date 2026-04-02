@@ -1,14 +1,14 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  *
  */
 
 namespace Zencart\PluginSupport;
 
-use App\Models\LayoutBox;
+use Zencart\DbRepositories\LayoutBoxRepository;
 use queryFactory;
 use queryFactoryResult;
 
@@ -364,8 +364,8 @@ trait ScriptedInstallHelpers
         // plugin, ensuring that the 'plugin_details' field contains the updated
         // plugin version number.
         //
-        LayoutBox::where('plugin_details', 'LIKE', $this->pluginKey . '/%')
-            ->update(['plugin_details' => $this->pluginKey . '/' . $this->version]);
+        $layoutBoxRepository = new LayoutBoxRepository($this->dbConn);
+        $layoutBoxRepository->updatePluginDetailsByPrefix($this->pluginKey, $this->version);
     }
 
     // -----
@@ -382,7 +382,8 @@ trait ScriptedInstallHelpers
         // Remove any entries in the layout_boxes table that reference this now
         // uninstalled plugin.
         //
-        LayoutBox::where('plugin_details', 'LIKE', $this->pluginKey . '/%')->delete();
+        $layoutBoxRepository = new LayoutBoxRepository($this->dbConn);
+        $layoutBoxRepository->deleteByPluginDetailsPrefix($this->pluginKey);
 
         // -----
         // If a plugin includes order_total, payment or shipping modules, any

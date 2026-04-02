@@ -2,9 +2,9 @@
 /**
  * Attribute functions
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: lat9 2025 Nov 02 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 13 Modified in v2.2.1 $
  */
 
 /**
@@ -583,7 +583,7 @@ function zen_copy_products_attributes($products_id_from, $products_id_to)
             );
             $messageStack->add_session(sprintf(TEXT_ATTRIBUTE_COPY_INSERTING, (int)$copy_from['products_attributes_id'], $products_id_from, $products_id_to), 'success');
 
-            $new_products_attributes_id = $db->Insert_ID();
+            $new_products_attributes_id = $db->insert_ID();
 
             // Notify that an attribute has been added for the product.
             $zco_notifier->notify('ZEN_COPY_PRODUCTS_ATTRIBUTES_ADD', ['pID' => $products_id_to, 'fields' => $copy_from]);
@@ -603,7 +603,7 @@ function zen_copy_products_attributes($products_id_from, $products_id_to)
                                 " . (int)$result['products_attributes_maxdays'] . ",
                                 " . (int)$result['products_attributes_maxcount'] . ")");
 
-                    $new_attribute_id = $db->Insert_ID();
+                    $new_attribute_id = $db->insert_ID();
                     $zco_notifier->notify('ZEN_COPY_PRODUCTS_ATTRIBUTES_ADDED_DOWNLOAD', $products_id_to, $new_products_attributes_id, $new_attribute_id);
                 }
             }
@@ -710,7 +710,7 @@ function zen_delete_products_attributes($product_id)
 
 /**
  * Set Product Attributes Sort Order to Products Option Value Sort Order for specified product
- * @param int $product_id
+ * @param numeric $product_id
  * @since ZC v1.0.3
  */
 function zen_update_attributes_products_option_values_sort_order($product_id)

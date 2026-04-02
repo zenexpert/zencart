@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Jul 23 Modified in v2.2.0 $
+ * @version $Id: Scott Wilson 2026 Mar 19 Modified in v2.2.1 $
  */
 
 return [
@@ -131,7 +131,7 @@ return [
 'TEXT_ERROR_COULD_NOT_WRITE_CONFIGFILE' => 'Could not write the generated config file: %s. Please ensure the file exists and is writable.',
 'TEXT_ERROR_STORE_CONFIGURE' => 'Catalog /includes/configure.php file either does not exist, is not readable or is not writeable',
 'TEXT_ERROR_ADMIN_CONFIGURE' => 'Admin /admin/includes/configure.php file either does not exist, is not readable or is not writeable',
-'TEXT_ERROR_PHP_VERSION' => str_replace(["\n", "\r"], '', 'Incorrect PHP Version.<p>The PHP version you are using (' . PHP_VERSION . ') is not suitable.</p><p>This version of Zen Cart&reg; is compatible with PHP versions 8.0 to 8.4, and 8.2.x or higher is recommended.<br>Check the <a href="https://www.zen-cart.com">www.zen-cart.com</a> website for the latest version of Zen Cart&reg;.</p><p>For more information about version compatibility and server requirements see <a href="https://docs.zen-cart.com/user/first_steps/server_requirements/">Zen Cart Server Requirements</a></p>'),
+'TEXT_ERROR_PHP_VERSION' => str_replace(["\n", "\r"], '', 'Incorrect PHP Version.<p>The PHP version you are using (' . PHP_VERSION . ') is not suitable.</p><p>This version of Zen Cart&reg; is compatible with PHP versions 8.2 to 8.5.<br>Check the <a href="https://www.zen-cart.com">www.zen-cart.com</a> website for the latest version of Zen Cart&reg;.</p><p>For more information about version compatibility and server requirements see <a href="https://docs.zen-cart.com/user/first_steps/server_requirements/">Zen Cart Server Requirements</a></p>'),
 'TEXT_ERROR_PHP_VERSION_RECOMMENDED' => '<p>For maximum security and compatibility you should be using PHP %s or newer. This installation can proceed, but note that your site will not be PCI Compliant when running out-of-date software.</p><p>Consult the <a href="https://www.php.net/supported-versions">PHP Website</a> for specifics.</p><p>For more information about version compatibility and server requirements see <a href="https://docs.zen-cart.com/user/first_steps/server_requirements/">Zen Cart Server Requirements</a></p>',
 'TEXT_ERROR_PHP_VERSION_MIN' => 'PHP Version should be greater than or equal to %s',
 'TEXT_ERROR_PHP_VERSION_MAX' => 'PHP Version should be less than or equal to %s',

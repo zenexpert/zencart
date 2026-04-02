@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 30 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  * @since ZC v1.5.7
  */
 
@@ -473,8 +473,7 @@ function zen_to_boolean(mixed $value, bool $null_on_failure = true): bool|null
 }
 
 /**
- * this function will need to be removed if
- * we ever revert to a full laravel install
+ * compatibility wrapper for request helper
  * @since ZC v1.5.8
  */
 
@@ -636,4 +635,3 @@ function zen_get_orders_status()
    trigger_error('Call to deprecated function; please use new names', E_USER_DEPRECATED);
    return zen_get_orders_status_pulldown_array();
 }
-

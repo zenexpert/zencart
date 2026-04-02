@@ -2,10 +2,10 @@
 /**
  * Header code file for the Address Book Process page
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: piloujp 2025 May 16 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 13 Modified in v2.2.1 $
  */
 // This should be first line of the script:
 $zco_notifier->notify('NOTIFY_HEADER_START_ADDRESS_BOOK_PROCESS');
@@ -221,7 +221,7 @@ if (isset($_POST['action']) && (($_POST['action'] == 'process') || ($_POST['acti
       $sql_data_array[] = array('fieldName'=>'customers_id', 'value'=>$_SESSION['customer_id'], 'type'=>'integer');
       $db->perform(TABLE_ADDRESS_BOOK, $sql_data_array);
 
-      $new_address_book_id = $db->Insert_ID();
+      $new_address_book_id = $db->insert_ID();
       $zco_notifier->notify('NOTIFY_MODULE_ADDRESS_BOOK_ADDED_ADDRESS_BOOK_RECORD', array_merge(array('address_id' => $new_address_book_id), $sql_data_array));
 
 

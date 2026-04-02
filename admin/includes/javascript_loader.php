@@ -2,10 +2,10 @@
 /**
  * This file is inserted at the start of the body tag, just above the header menu, and loads most of the admin javascript components
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Mar 19 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 ?>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -73,8 +73,16 @@ foreach ($directory_array as $key => $value) {
 }
 
 foreach ($installedPlugins as $plugin) {
-    $relativeDir = $plugin->getRelativePath();
-    $absoluteDir = $plugin->getAbsolutePath();
+    if (is_object($plugin) && method_exists($plugin, 'getRelativePath') && method_exists($plugin, 'getAbsolutePath')) {
+        $relativeDir = $plugin->getRelativePath();
+        $absoluteDir = $plugin->getAbsolutePath();
+    } else {
+        $pluginKey = $plugin['unique_key'] ?? '';
+        $pluginVersion = $plugin['version'] ?? '';
+        $relativeDir = ($GLOBALS['request_type'] === 'SSL' ? DIR_WS_HTTPS_CATALOG : DIR_WS_CATALOG)
+            . 'zc_plugins/' . $pluginKey . '/' . $pluginVersion . '/';
+        $absoluteDir = DIR_FS_CATALOG . 'zc_plugins/' . $pluginKey . '/' . $pluginVersion . '/';
+    }
     $directory_array = $template->get_template_part($absoluteDir . 'admin/includes/javascript/', '/^global_jscript/', '.php');
     foreach ($directory_array as $key => $value) {
         require $absoluteDir . 'admin/includes/javascript/' . $value;

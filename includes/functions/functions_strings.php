@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license https://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: John 2025 Oct 22 Modified in v2.2.0 $
+ * @version $Id: piloujp 2026 Mar 19 Modified in v2.2.1 $
  */
 
 /**
@@ -49,7 +49,8 @@ function zen_preserve_search_quotes(?string $search_string): string
  * with parameters that run htmlspecialchars over the string
  * and converts quotes to html entities
  *
- * @param  string  $string  The string to be parsed
+ * @param  string|null  $string  $string  The string to be parsed
+ * @return string
  * @since ZC v1.0.3
  */
 function zen_output_string_protected(?string $string): string
@@ -94,9 +95,9 @@ function zen_not_null(mixed $value): bool
 /**
  * Break a word in a string if it is longer than a specified length ($len)
  *
- * @param  string  $string  The string to be broken up
+ * @param  string|null  $string  The string to be broken up
  * @param  int  $len  The maximum length allowed
- * @param  ?string  $break_char  The character to use at the end of the broken line
+ * @param  string  $break_char  The character to use at the end of the broken line
  * @return string
  * @since ZC v1.0.3
  */
@@ -224,17 +225,24 @@ function zen_word_count(string $string, string $needle): int
  * @return string
  * @since ZC v1.0.3
  */
-function zen_array_to_string(array $array, array|string $exclude = '', string $equals = '=', string $separator = '&'): string
+function zen_array_to_string(array $array, array|string $exclude = [], string $equals = '=', string $separator = '&'): string
 {
-    if (!is_array($exclude)) $exclude = [];
-    if (!is_array($array)) $array = [];
+    if (is_string($exclude)) {
+        $exclude = [$exclude];
+    }
 
     $get_string = '';
     unset($array['x'], $array['y']);
     if (count($array) > 0) {
         foreach ($array as $key => $value) {
             if (!in_array($key, $exclude)) {
-                $get_string .= $key . $equals . $value . $separator;
+                if (is_array($value)) {
+                    foreach ($value as $k => $v) {
+                        $get_string .= $key . "[$k]" . $equals . $v . $separator;
+                    }
+                } else {
+                    $get_string .= $key . $equals . $value . $separator;
+                }
             }
         }
         $remove_chars = strlen($separator);
@@ -377,11 +385,7 @@ function zen_clean_html(string $clean_it, array|string $extraTags = ''): string
     // remove any embedded javascript
     $clean_it = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $clean_it ?? '');
 
-    $clean_it = preg_replace('/\r/', ' ', $clean_it);
-    $clean_it = preg_replace('/\t/', ' ', $clean_it);
-    $clean_it = preg_replace('/\n/', ' ', $clean_it);
-
-    $clean_it = nl2br($clean_it);
+    $clean_it = str_replace(["\r", "\t", "\n"], ' ', $clean_it);
 
     // update breaks with a space for text displays in all listings with descriptions
     $clean_it = preg_replace('~(<br ?/?>|</?p>)~', ' ', $clean_it);

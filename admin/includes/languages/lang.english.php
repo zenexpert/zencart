@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-* @version $Id: Leonard 2025 Sep 14 Modified in v2.2.0 $
+* @version $Id: lat9 2026 Feb 28 Modified in v2.2.1 $
 */
 
 @setlocale(LC_TIME, ['en_US', 'en_US.utf8', 'en', 'English_United States.1252']);
@@ -388,6 +388,7 @@ $define = [
     'SUCCESS_CATEGORY_MOVED' => 'Success! Category has successfully been moved ...',
     'SUCCESS_FILE_SAVED_SUCCESSFULLY' => 'Success: File upload saved successfully %s',
     'SUCCESS_PRODUCT_UPDATE_SORT' => 'Successful Attribute Sort Order Update for ID# ',
+    'SUCCESS_USER_DETAILS_UPDATED' => 'User details updated.',
     'TABLE_ATTRIBUTES_QTY_PRICE_PRICE' => 'PRICE',
     'TABLE_ATTRIBUTES_QTY_PRICE_QTY' => 'QTY',
     'TABLE_HEADING_ACTION' => 'Action',

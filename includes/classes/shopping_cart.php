@@ -2,10 +2,10 @@
 /**
  * Class for managing the Shopping Cart
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 29 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Mar 13 Modified in v2.2.1 $
  * @since ZC v1.0.3
  */
 
@@ -2068,7 +2068,7 @@ class shoppingCart extends base
                                     } else {
                                         $db->Execute("INSERT INTO " . TABLE_FILES_UPLOADED . " (sesskey, files_uploaded_name) VALUES ('" . zen_session_id() . "', '" . zen_db_input($products_options_file->filename) . "')");
                                     }
-                                    $insert_id = $db->Insert_ID();
+                                    $insert_id = $db->insert_ID();
                                     $real_ids[$text_prefix] = $insert_id . ". " . $products_options_file->filename;
                                     $products_options_file->set_filename($insert_id . $products_image_extension);
                                     if (!($products_options_file->save())) {
@@ -2721,7 +2721,7 @@ class shoppingCart extends base
             $products_id = $_POST['products_id'][$i];
             $prs_id = zen_get_prid($products_id);
             $current_qty = $this->get_quantity($products_id); // $products[$i]['quantity']
-            if (!is_numeric($_POST['cart_quantity'][$i]) || $_POST['cart_quantity'][$i] < 0) {
+            if (!isset($_POST['cart_quantity'][$i]) || !is_numeric($_POST['cart_quantity'][$i]) || $_POST['cart_quantity'][$i] < 0) {
                 $_POST['cart_quantity'][$i] = $current_qty; // Default response behavior in cart.
             }
             // Ensure array key exists before use in assignment.

@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 14 Modified in v2.2.1 $
  */
 namespace Zencart\LanguageLoader;
 
@@ -74,7 +74,7 @@ class CatalogFilesLanguageLoader extends FilesLanguageLoader
     /**
      * @since ZC v1.5.8
      */
-    protected function LoadLanguageExtraDefinitions(): void
+    protected function loadLanguageExtraDefinitions(): void
     {
         $extraDefsDir = DIR_WS_LANGUAGES . $_SESSION['language'] . '/extra_definitions';
         $extraDefsDirTpl = $extraDefsDir . '/' . $this->templateDir;
