@@ -14,7 +14,7 @@ if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) {
 // return;
 
 // Configure settings
-// To override the $includeAttributesInPopoverRows or $recentOrdersMaxRows
+// To override the $includeAttributesInPopoverRows or $recentOrdersMaxRows or $recentOrdersWidgetOrderStatusIDs or $show_status_pills
 // values, see
 // https://docs.zen-cart.com/user/admin/site_specific_overrides/
 $includeAttributesInPopoverRows = $includeAttributesInPopoverRows ?? true;
