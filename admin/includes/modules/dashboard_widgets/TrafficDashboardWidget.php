@@ -22,9 +22,8 @@ $hits = [];
 // get history
 $visits_query = "SELECT startdate, counter, session_counter
                  FROM " . TABLE_COUNTER_HISTORY . "
-                 ORDER BY startdate DESC
-                 LIMIT " . (int)$maxRows;
-$visits = $db->Execute($visits_query);
+                 ORDER BY startdate DESC";
+$visits = $db->Execute($visits_query, (int)$maxRows, true, 1800);
 
 // process data (note: SQL returns DESC, we need ASC for the chart, so we fetch then reverse)
 $temp_data = [];
