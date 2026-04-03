@@ -56,7 +56,7 @@ if (!is_array($zones) || empty($zones)) {
 function render_zone($zone_name, $widgets_array)
 {
     /** Globals needed inside widgets */
-    global $db, $currencies, $show_status_pills, $target_status_ids, $sniffer, $zco_notifier, $messageStack, $recentOrdersMaxRows, $target_status_ids, $show_status_pills, $zcDate;
+    global $db, $currencies, $show_status_pills, $target_status_ids, $sniffer, $zco_notifier, $messageStack, $recentOrdersMaxRows, $recentOrdersWidgetOrderStatusIDs, $show_status_pills, $zcDate;
 
     // Define the accepted base path for widgets to prevent LFI vulnerabilities
     $acceptedPath = realPath(DIR_FS_CATALOG);
