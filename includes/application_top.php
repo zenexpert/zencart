@@ -173,7 +173,7 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 
     // count occurrences of each key
     $counts = array_count_values($keys);
-    foreach ($counts as $name => $count) {
+    foreach ($counts as $key => $count) {
         // allow one duplication (possibly accidental), more than 2 is not accidental
         if ($count > 2) {
             $contaminated = true;
