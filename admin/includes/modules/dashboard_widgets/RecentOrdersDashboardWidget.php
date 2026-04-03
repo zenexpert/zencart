@@ -10,6 +10,7 @@ if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) {
     return;
 }
 
+global $currencies, $recentOrdersMaxRows, $show_status_pills, $recentOrdersWidgetOrderStatusIDs;
 // to disable this module for everyone, uncomment the following "return" statement so the rest of this file is ignored
 // return;
 
