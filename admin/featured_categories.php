@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright 2003-2026 Zen Cart Development Team
 * @copyright Portions Copyright 2003 osCommerce
@@ -39,7 +40,7 @@ if ($action !== '') {
                 if (empty($featured_date_available_raw)) {
                     $featured_date_available = '';
                 } else {
-                    if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd' && !empty($featured_date_available_raw)) {
+                    if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd') {
                         $local_fmt = zen_datepicker_format_fordate();
                         $dt = DateTime::createFromFormat($local_fmt, $featured_date_available_raw);
                         $featured_date_available_raw = 'null';
@@ -58,7 +59,7 @@ if ($action !== '') {
                 if (empty($expires_date_raw)) {
                     $expires_date = '';
                 } else {
-                    if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd' && !empty($expires_date_raw)) {
+                    if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd') {
                         $local_fmt = zen_datepicker_format_fordate();
                         $dt = DateTime::createFromFormat($local_fmt, $expires_date_raw);
                         $expires_date_raw = 'null';
@@ -101,7 +102,7 @@ if ($action !== '') {
             if (empty($featured_date_available_raw)) {
                 $featured_date_available = '';
             } else {
-                if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd' && !empty($featured_date_available_raw)) {
+                if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd') {
                     $local_fmt = zen_datepicker_format_fordate();
                     $dt = DateTime::createFromFormat($local_fmt, $featured_date_available_raw);
                     $featured_date_available_raw = 'null';
@@ -120,7 +121,7 @@ if ($action !== '') {
             if (empty($expires_date_raw)) {
                 $expires_date = '';
             } else {
-                if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd' && !empty($expires_date_raw)) {
+                if (DATE_FORMAT_DATE_PICKER !== 'yy-mm-dd') {
                     $local_fmt = zen_datepicker_format_fordate();
                     $dt = DateTime::createFromFormat($local_fmt, $expires_date_raw);
                     $expires_date_raw = 'null';
