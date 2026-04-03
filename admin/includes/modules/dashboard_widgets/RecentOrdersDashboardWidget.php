@@ -29,6 +29,9 @@ $currencies ??= new currencies();
 
 // prepare data
 
+// only keep valid integers
+$target_status_ids = array_filter($target_status_ids, static fn($id) => is_int($id) || ctype_digit($id));
+
 $sql = "SELECT o.orders_id, o.customers_name, o.customers_id, o.date_purchased,
                o.currency, o.currency_value, o.orders_status,
                ot.text as order_total, ot.value as order_value,
