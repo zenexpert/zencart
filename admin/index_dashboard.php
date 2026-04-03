@@ -15,10 +15,10 @@ if (!defined('DASHBOARD_WIDGETS_CONFIG')) {
 
 // pre-fetch key metrics for KPI cards
 // we keep these hardcoded as they are specific to the header design
-$orders_today = $db->Execute("select count(*) as count from " . TABLE_ORDERS . " where date_purchased > '" . date('Y-m-d') . "'");
-$revenue_today = $db->Execute("select sum(value) as total from " . TABLE_ORDERS_TOTAL . " ot left join " . TABLE_ORDERS . " o on o.orders_id = ot.orders_id where o.date_purchased > '" . date('Y-m-d') . "' AND ot.class = 'ot_total'");
-$customers_today = $db->Execute("select count(*) as count from " . TABLE_CUSTOMERS_INFO . " where customers_info_date_account_created > '" . date('Y-m-d') . "'");
-$reviews_pending = $db->Execute("select count(*) as count from " . TABLE_REVIEWS . " where status = 0");
+$orders_today = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_ORDERS . " WHERE date_purchased > '" . date('Y-m-d') . "'");
+$revenue_today = $db->Execute("SELECT SUM(value) AS total FROM " . TABLE_ORDERS_TOTAL . " ot LEFT JOIN " . TABLE_ORDERS . " o ON o.orders_id = ot.orders_id where o.date_purchased > '" . date('Y-m-d') . "' AND ot.class = 'ot_total'");
+$customers_today = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_CUSTOMERS_INFO . " WHERE customers_info_date_account_created > '" . date('Y-m-d') . "'");
+$reviews_pending = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_REVIEWS . " WHERE status = 0");
 
 // zone definitions
 // each zone is an array of widget file paths to include
