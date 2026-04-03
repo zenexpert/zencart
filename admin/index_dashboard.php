@@ -15,9 +15,9 @@ if (!defined('DASHBOARD_WIDGETS_CONFIG')) {
 
 // pre-fetch key metrics for KPI cards
 // we keep these hardcoded as they are specific to the header design
-$orders_today = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_ORDERS . " WHERE date_purchased > '" . date('Y-m-d') . "'");
-$revenue_today = $db->Execute("SELECT SUM(value) AS total FROM " . TABLE_ORDERS_TOTAL . " ot LEFT JOIN " . TABLE_ORDERS . " o ON o.orders_id = ot.orders_id where o.date_purchased > '" . date('Y-m-d') . "' AND ot.class = 'ot_total'");
-$customers_today = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_CUSTOMERS_INFO . " WHERE customers_info_date_account_created > '" . date('Y-m-d') . "'");
+$orders_today = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_ORDERS . " WHERE date_purchased > CURDATE()");
+$revenue_today = $db->Execute("SELECT SUM(value) AS total FROM " . TABLE_ORDERS_TOTAL . " ot LEFT JOIN " . TABLE_ORDERS . " o ON o.orders_id = ot.orders_id where o.date_purchased > CURDATE() AND ot.class = 'ot_total'");
+$customers_today = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_CUSTOMERS_INFO . " WHERE customers_info_date_account_created > CURDATE()");
 $reviews_pending = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_REVIEWS . " WHERE status = 0");
 
 // zone definitions
@@ -29,18 +29,18 @@ $reviews_pending = $db->Execute("SELECT COUNT(*) AS count FROM " . TABLE_REVIEWS
 $default_zones = [
     'main' => [
         'SalesReportDashboardWidget.php',
-        'RecentOrdersDashboardWidget.php'
+        'RecentOrdersDashboardWidget.php',
     ],
     'sidebar' => [
         'OrderStatusDashboardWidget.php',
         'MostPopularProductsDashboardWidget.php',
-        'WhosOnlineDashboardWidget.php'
+        'WhosOnlineDashboardWidget.php',
     ],
     'bottom' => [
         'TrafficDashboardWidget.php',
         'SpecialsDashboardWidget.php',
-        'BaseStatisticsDashboardWidget.php'
-    ]
+        'BaseStatisticsDashboardWidget.php',
+    ],
 ];
 
 // check database for saved layout
@@ -55,7 +55,13 @@ if (!is_array($zones) || empty($zones)) {
 // render a zone
 function render_zone($zone_name, $widgets_array)
 {
-    global $db, $currencies, $show_status_pills, $target_status_ids, $sniffer, $zco_notifier, $messageStack, $recentOrdersMaxRows, $target_status_ids, $show_status_pills, $zcDate; // Globals needed inside widgets
+    /** Globals needed inside widgets */
+    global $db, $currencies, $show_status_pills, $target_status_ids, $sniffer, $zco_notifier, $messageStack, $recentOrdersMaxRows, $target_status_ids, $show_status_pills, $zcDate;
+
+    // Define the accepted base path for widgets to prevent LFI vulnerabilities
+    $acceptedPath = realPath(DIR_FS_CATALOG);
+
+    $zone_name = zen_output_string_protected($zone_name);
 
     echo '<ul id="zone-' . $zone_name . '" class="sortable-list list-unstyled row" style="min-height: 200px; padding-bottom: 50px;">';
 
@@ -65,39 +71,40 @@ function render_zone($zone_name, $widgets_array)
         // check if this is an Encapsulated Plugin (absolute path provided)
         if (file_exists($widget_file)) {
             $path = $widget_file;
-        }
-        // treat as Core Widget (relative filename provided)
+        } // treat as Core Widget (relative filename provided)
         else {
             $path = DIR_WS_MODULES . 'dashboard_widgets/' . $widget_file;
         }
 
-        if (file_exists($path)) {
-
-            $widget_name = basename($path);
-
-            $col_class = 'col-md-12';
-
-            if ($zone_name == 'bottom') {
-                if ($widget_name == 'TrafficDashboardWidget.php') {
-                    $col_class = 'col-xs-12 col-md-6'; // traffic gets half width
-                } else {
-                    $col_class = 'col-xs-12 col-md-3'; // others get quarter width
-                }
-            }
-
-            // data-markers for JS
-            $data_attr = 'data-id="' . $widget_name . '"';
-            $li_class = $col_class . ' widget-li';
-
-            // Traffic widget - prevent it moving to sidebar
-            if ($widget_name == 'TrafficDashboardWidget.php') {
-                $li_class .= ' locked-bottom';
-            }
-
-            echo '<li class="' . $li_class . '" ' . $data_attr . '>';
-            include $path;
-            echo '</li>';
+        // Path validation (catch invalid path errors) and security LFI check (prevent loading files from outside)
+        $realPath = realpath($path);
+        if ($realPath === false || !str_starts_with($realPath, $acceptedPath) || !file_exists($path)) {
+            continue; // skip this widget if path is invalid, insecure, or file doesn't exist
         }
+
+        $widget_name = basename($path);
+        $col_class = 'col-md-12';
+
+        if ($zone_name === 'bottom') {
+            if ($widget_name === 'TrafficDashboardWidget.php') {
+                $col_class = 'col-xs-12 col-md-6'; // traffic gets half width
+            } else {
+                $col_class = 'col-xs-12 col-md-3'; // others get quarter width
+            }
+        }
+
+        // data-markers for JS
+        $data_attr = 'data-id="' . $widget_name . '"';
+        $li_class = $col_class . ' widget-li';
+
+        // Traffic widget - prevent it moving to sidebar
+        if ($widget_name === 'TrafficDashboardWidget.php') {
+            $li_class .= ' locked-bottom';
+        }
+
+        echo '<li class="' . $li_class . '" ' . $data_attr . '>';
+        include $path;
+        echo '</li>';
     }
     echo '</ul>';
 }
@@ -111,7 +118,9 @@ $widgets = [];
 $zco_notifier->notify('NOTIFY_ADMIN_DASHBOARD_WIDGETS', null, $widgets);
 
 foreach ($widgets as $widget) {
-    if (!isset($widget['path'])) continue;
+    if (!isset($widget['path'])) {
+        continue;
+    }
 
     $file_path = $widget['path'];
     $file_name = basename($file_path);
@@ -119,7 +128,9 @@ foreach ($widgets as $widget) {
 
     // check existing zones to see if this widget is already there
     foreach ($zones as $z_name => &$z_files) {
-        if (!is_array($z_files)) continue;
+        if (!is_array($z_files)) {
+            continue;
+        }
 
         foreach ($z_files as $key => &$z_file) {
             if (basename($z_file) === $file_name) {
@@ -139,16 +150,19 @@ foreach ($widgets as $widget) {
     if (!$found_in_zones) {
         // legacy column 3 -> sidebar zone
         if (isset($widget['column']) && $widget['column'] == 3) {
-            if (!isset($zones['sidebar'])) $zones['sidebar'] = [];
+            if (!isset($zones['sidebar'])) {
+                $zones['sidebar'] = [];
+            }
             array_unshift($zones['sidebar'], $file_path);
         } else {
             // legacy column 1 or 2 -> main zone
-            if (!isset($zones['main'])) $zones['main'] = [];
+            if (!isset($zones['main'])) {
+                $zones['main'] = [];
+            }
             $zones['main'][] = $file_path;
         }
     }
 }
-
 ?>
 
 <!doctype html>
