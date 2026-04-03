@@ -150,13 +150,13 @@ if ($show_status_pills) {
                     $order['customers_name'] = str_replace('N/A', '', $order['customers_name']);
                     $oID = $order['orders_id'];
                     $name = zen_output_string_protected($order['customers_name']);
-		            $date = zen_date_short($orders->fields['date_purchased']);
+                    $date = zen_date_short($order['date_purchased']);
                     $statusName = $order['orders_status_name'];
                     $statusId = (int)$order['orders_status'];
                     $customColor = $order['orders_status_color_code'] ?? '';
-                    $amt = $currencies->format($orders->fields['order_value'], false);
-                    if ($orders->fields['currency'] != DEFAULT_CURRENCY) {
-                        $amt .= '<br><small class="text-muted">(' . $orders->fields['order_total'] . ')</small>';
+                    $amt = $currencies->format($order['order_value'], false);
+                    if ($order['currency'] != DEFAULT_CURRENCY) {
+                        $amt .= '<br><small class="text-muted">(' . $order['order_total'] . ')</small>';
                     }
 
                     $sql = "SELECT op.orders_products_id, op.products_quantity AS qty, op.products_name AS name, op.products_model AS model
