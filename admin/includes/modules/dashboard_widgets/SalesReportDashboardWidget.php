@@ -40,7 +40,7 @@ $sql = "SELECT date(o.date_purchased) as sale_date,
         AND o.date_purchased >= DATE_SUB(NOW(), INTERVAL " . (int)$days_to_show . " DAY)
         GROUP BY sale_date";
 
-$results = $db->Execute($sql);
+$results = $db->Execute($sql, null, true, 1800);
 
 foreach ($results as $result) {
     $day = $result['sale_date'];
