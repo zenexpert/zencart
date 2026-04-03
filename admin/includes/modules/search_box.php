@@ -11,8 +11,8 @@
 // that attribute.
 //
 $autofocus_search = empty($no_searchbox_autofocus) ? ' autofocus="autofocus"' : '';
-echo zen_draw_form('searchForm', basename($PHP_SELF, '.php'), '', 'get', 'class="form-horizontal"', true);
 ?>
+<?= zen_draw_form('searchForm', basename($PHP_SELF, '.php'), '', 'get', 'class="form-horizontal"', true); ?>
 <div class="form-group">
   <?= zen_draw_label(HEADING_TITLE_SEARCH_DETAIL, 'search', 'class="control-label col-sm-3"') ?>
   <div class="col-sm-9">
