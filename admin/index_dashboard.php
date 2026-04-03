@@ -156,7 +156,6 @@ foreach ($widgets as $widget) {
 <head>
     <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 </head>
 <body class="indexDashboard">
 
