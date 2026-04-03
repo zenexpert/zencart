@@ -259,6 +259,7 @@ $define = [
     'HEADER_TITLE_VERSION_UP_TO_DATE' => 'Your system is up to date.',
     'HEADER_TOGGLE_NAVIGATION' => 'Toggle navigation',
     'HEADER_TITLE_MENU' => 'Menu',
+    'HEADER_TITLE_MENU_ERROR' => 'Menu empty, or settings error.',
     'HEADER_TEXT_ADMIN' => 'Admin',
     'HEADER_TEXT_SEARCH_ORDERS' => 'Search Orders...',
     'HEADER_TEXT_LANGUAGES' => 'Languages',
