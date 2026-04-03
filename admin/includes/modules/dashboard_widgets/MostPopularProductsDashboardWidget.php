@@ -34,14 +34,13 @@ $top_products = $db->Execute($sql, 5, true, 1800);
                 $name = $top_product['products_name'];
                 $sold = $top_product['total_sold'];
                 $img  = $top_product['products_image'];
-                $model = $top_product['products_model'];
+                $model = zen_output_string_protected($top_product['products_model']);
 
-                $img_path = DIR_WS_CATALOG_IMAGES . $img;
                 if (empty($img) || !file_exists(DIR_FS_CATALOG_IMAGES . $img)) {
                     // fallback placeholder if no image found
                     $thumb = '<div class="most-popular-fallback-image"><i class="fa fa-image"></i></div>';
                 } else {
-                    $thumb = '<img class="most-popular-main-image" src="' . $img_path . '" alt=" ' . $name . ' ">';
+                    $thumb = zen_image($img, $name, IMAGE_SHOPPING_CART_WIDTH, IMAGE_SHOPPING_CART_HEIGHT, 'class="most-popular-main-image object-fit-contain"');
                 }
                 ?>
                 <li class="list-group-item most-popular-item">
@@ -54,7 +53,7 @@ $top_products = $db->Execute($sql, 5, true, 1800);
                         <div class="media-body media-middle">
                             <h4 class="media-heading">
                                 <a href="<?= zen_href_link(FILENAME_PRODUCT, 'action=new_product&pID=' . $pID) ?>">
-                                    <?= zen_trunc_string($name, 35, true) ?>
+                                    <?= zen_trunc_string(zen_output_string_protected($name), 35, true) ?>
                                 </a>
                             </h4>
                             <small class="text-muted"><?= BOX_LABEL_PRODUCTS_ID . $pID . (!empty($model) ? ' | ' . BOX_LABEL_PRODUCTS_MODEL . $model : '' ) ?></small>
