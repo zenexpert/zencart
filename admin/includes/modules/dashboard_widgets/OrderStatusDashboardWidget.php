@@ -5,7 +5,9 @@
  * @author ZenExpert - https://zenexpert.com
  */
 
-if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) return;
+if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) {
+    return;
+}
 
 // to disable this module for everyone, uncomment the following "return" statement so the rest of this file is ignored
 // return;
@@ -21,17 +23,16 @@ $sql = "SELECT orders_status, count(*) as total
         FROM " . TABLE_ORDERS . "
         GROUP BY orders_status";
 // cached for 30 minutes to reduce load
-$result = $db->Execute($sql, false, true, 1800);
+$results = $db->Execute($sql, false, true, 1800);
 
-while (!$result->EOF) {
-    $status_counts[$result->fields['orders_status']] = $result->fields['total'];
-    $result->MoveNext();
+foreach ($results as $result) {
+    $status_counts[$result['orders_status']] = $result['total'];
 }
 ?>
 
 <div class="panel widget-wrapper">
     <div class="panel-heading">
-        <i class="fa fa-clipboard"></i> <?php echo BOX_ORDER_STATUS_HEADING; ?>
+        <i class="fa fa-clipboard"></i> <?= BOX_ORDER_STATUS_HEADING ?>
     </div>
 
     <ul class="list-group">
@@ -45,22 +46,22 @@ while (!$result->EOF) {
             $icon       = ($count > 0) ? 'fa-folder-open' : 'fa-folder-o';
             ?>
             <li class="list-group-item">
-                <a href="<?php echo zen_href_link(FILENAME_ORDERS, 'statusFilterSelect=' . $sID); ?>" style="<?php echo $textStyle; ?>">
-                    <i class="fa <?php echo $icon; ?> text-muted" style="margin-right: 5px; width: 15px;"></i>
-                    <?php echo $status['text']; ?>
+                <a href="<?= zen_href_link(FILENAME_ORDERS, 'statusFilterSelect=' . $sID) ?>" style="<?= $textStyle ?>">
+                    <i class="fa <?= $icon ?> text-muted"></i>
+                    <?= $status['text'] ?>
                 </a>
                 <div class="pull-right">
-                <span class="label <?php echo $badgeClass; ?>" style="min-width: 25px; display: inline-block;">
-                    <?php echo $count; ?>
+                <span class="label order-status-label <?= $badgeClass ?>">
+                    <?= $count ?>
                 </span>
                 </div>
             </li>
         <?php } ?>
     </ul>
 
-    <div class="panel-footer text-center" style="background: #fff; padding: 8px;">
-        <a href="<?php echo zen_href_link(FILENAME_ORDERS_STATUS); ?>" class="small text-muted">
-            <i class="fa fa-cog"></i> <?php echo BOX_ORDER_STATUS_MANAGE; ?>
+    <div class="panel-footer text-center">
+        <a href="<?= zen_href_link(FILENAME_ORDERS_STATUS) ?>" class="small text-muted">
+            <i class="fa fa-cog"></i> <?= BOX_ORDER_STATUS_MANAGE ?>
         </a>
     </div>
 </div>

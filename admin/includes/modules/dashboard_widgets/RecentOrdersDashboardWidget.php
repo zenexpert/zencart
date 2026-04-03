@@ -6,7 +6,9 @@
  * @author ZenExpert - https://zenexpert.com
  */
 
-if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) return;
+if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) {
+    return;
+}
 
 // to disable this module for everyone, uncomment the following "return" statement so the rest of this file is ignored
 // return;
@@ -18,129 +20,226 @@ if (!zen_is_superuser() && !check_page(FILENAME_ORDERS, '')) return;
 $includeAttributesInPopoverRows = $includeAttributesInPopoverRows ?? true;
 $maxRows = $recentOrdersMaxRows ?? 10; // default to 10 for a cleaner dashboard
 
+// define orders statuses to show in top bar
+$show_status_pills = $show_status_pills ?? true;
+if (!isset($target_status_ids)) {
+    $target_status_ids = [1, 2]; // pending and processing
+}
 $currencies ??= new currencies();
 
 // prepare data
+
 $sql = "SELECT o.orders_id, o.customers_name, o.customers_id, o.date_purchased,
                o.currency, o.currency_value, o.orders_status,
                ot.text as order_total, ot.value as order_value,
-               s.orders_status_name
+               s.orders_status_name, s.orders_status_color_code
         FROM " . TABLE_ORDERS . " o
         LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id AND ot.class = 'ot_total')
         LEFT JOIN " . TABLE_ORDERS_STATUS . " s ON (o.orders_status = s.orders_status_id AND s.language_id = " . (int)$_SESSION['languages_id'] . ")
         ORDER BY o.orders_id DESC";
-
 $orders = $db->Execute($sql, (int)$maxRows, true, 1800);
+
+// get status metadata (name, color)
+    $status_meta = [];
+    if (!empty($target_status_ids)) {
+        $ids_str = implode(',', $target_status_ids);
+        $sql_meta = "SELECT orders_status_id, orders_status_name, orders_status_color_code
+                 FROM " . TABLE_ORDERS_STATUS . "
+                 WHERE language_id = " . (int)$_SESSION['languages_id'] . "
+                 AND orders_status_id IN (" . $ids_str . ")";
+        $results_meta = $db->Execute($sql_meta);
+
+        foreach ($results_meta as $result_meta) {
+            $id = $result_meta['orders_status_id'];
+            $status_meta[$id] = [
+                'name' => $result_meta['orders_status_name'],
+                'color' => $result_meta['orders_status_color_code']
+            ];
+        }
+    }
+
+
+if ($show_status_pills) {
+    $status_counts = [];
+    // pre-fill with 0 to ensure badges show even if count is 0
+    foreach ($target_status_ids as $tid) {
+        $status_counts[$tid] = 0;
+    }
+    if (!empty($target_status_ids)) {
+        $ids_str = implode(',', $target_status_ids);
+        $sql_stats = "SELECT orders_status, count(*) as total
+                      FROM " . TABLE_ORDERS . "
+                      WHERE orders_status IN (" . $ids_str . ")
+                      GROUP BY orders_status";
+        $results_stats = $db->Execute($sql_stats);
+        foreach ($results_stats as $result_stats) {
+            $status_counts[$result_stats['orders_status']] = $result_stats['total'];
+        }
+    }
+}
 ?>
 
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-xs-8">
-                <i class="fa fa-list-alt"></i> <?php echo BOX_ENTRY_NEW_ORDERS; ?>
+            <div class="col-md-2 hidden-xs">
+                <i class="fa fa-list-alt"></i> <?= BOX_ENTRY_NEW_ORDERS ?>
             </div>
-            <div class="col-xs-4 text-right">
-                <a href="<?php echo zen_href_link(FILENAME_ORDERS); ?>" class="btn btn-xs btn-default">
-                    <?php echo BOX_ENTRY_VIEW_ALL; ?> <i class="fa fa-angle-double-right"></i>
+            <div class="col-xs-12 col-md-8 mb-2 text-center status-pills">
+                <?php
+                if($show_status_pills) {
+                foreach ($target_status_ids as $sID) {
+                    $count = $status_counts[$sID];
+                    $name  = isset($status_meta[$sID]) ? $status_meta[$sID]['name'] : zen_get_orders_status_name($sID);
+                    $customColor = isset($status_meta[$sID]) ? $status_meta[$sID]['color'] : null;
+
+                    // determine style
+                    $inlineStyle = '';
+                    $badgeClass  = 'label-default';
+
+                    if (!empty($customColor)) {
+                        // custom color badge
+                        $badgeClass  = 'label';
+                        $inlineStyle = 'background-color: ' . $customColor . '; border-color: ' . $customColor . '; color: #fff;';
+                    } else {
+                        // fallback Bootstrap colors
+                        switch ($sID) {
+                            case 1: $badgeClass = 'label-warning'; break; // Pending
+                            case 2: $badgeClass = 'label-info'; break;    // Processing
+                            case 3: $badgeClass = 'label-success'; break; // Delivered
+                            default: $badgeClass = 'label-default';
+                        }
+                    }
+
+                    // fade out if count is 0
+                    $opacity = ($count == 0) ? 'opacity: 0.5;' : '';
+                    ?>
+                    <a href="<?= zen_href_link(FILENAME_ORDERS, 'statusFilterSelect=' . $sID) ?>">
+                        <span class="label <?= $badgeClass ?>" style="<?= $inlineStyle . $opacity ?>">
+                            <?= $name ?>: <strong><?= $count ?></strong>
+                        </span>
+                    </a>
+                <?php }
+                } ?>
+            </div>
+            <div class="col-xs-12 col-md-2 text-right">
+                <a href="<?= zen_href_link(FILENAME_ORDERS) ?>" class="btn btn-xs btn-default">
+                    <?= BOX_ENTRY_VIEW_ALL ?> <i class="fa fa-angle-double-right"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover table-striped" style="margin-bottom: 0;">
+    <div class="table-responsive recent-orders">
+        <table class="table table-hover table-striped mb-0">
             <thead>
             <tr>
-                <th><?php echo BOX_ORDERS_ID; ?></th>
-                <th><?php echo BOX_ORDERS_CUSTOMER; ?></th>
-                <th><?php echo BOX_ORDERS_STATUS; ?></th>
-                <th class="text-right"><?php echo BOX_ORDERS_DATE; ?></th>
-                <th class="text-right"><?php echo DASHBOARD_TOTAL; ?></th>
-                <th class="text-right" style="width: 150px;"><?php echo BOX_ORDERS_ACTIONS; ?></th>
+                <th><?= BOX_ORDERS_ID ?></th>
+                <th><?= BOX_ORDERS_CUSTOMER ?></th>
+                <th><?= BOX_ORDERS_STATUS ?></th>
+                <th class="text-right"><?= BOX_ORDERS_DATE ?></th>
+                <th class="text-right"><?= DASHBOARD_TOTAL ?></th>
+                <th class="text-right" style="width: 150px;"><?= BOX_ORDERS_ACTIONS ?></th>
             </tr>
             </thead>
             <tbody>
-            <?php while (!$orders->EOF) {
-                $oID = $orders->fields['orders_id'];
-                $name = zen_output_string_protected($orders->fields['customers_name']);
-                $date = zen_date_short($orders->fields['date_purchased']);
-                $statusName = $orders->fields['orders_status_name'];
-                $statusId = (int)$orders->fields['orders_status'];
+                <?php
+                foreach ($orders as $order) {
 
-                $amt = $currencies->format($orders->fields['order_value'], false);
-                if ($orders->fields['currency'] != DEFAULT_CURRENCY) {
-                    $amt .= '<br><small class="text-muted">(' . $orders->fields['order_total'] . ')</small>';
-                }
+                    // prepare data
+                    $order['customers_name'] = str_replace('N/A', '', $order['customers_name']);
+                    $oID = $order['orders_id'];
+                    $name = zen_output_string_protected($order['customers_name']);
+		            $date = zen_date_short($orders->fields['date_purchased']);
+                    $statusName = $order['orders_status_name'];
+                    $statusId = (int)$order['orders_status'];
+                    $customColor = $order['orders_status_color_code'] ?? '';
+                    $amt = $currencies->format($orders->fields['order_value'], false);
+                    if ($orders->fields['currency'] != DEFAULT_CURRENCY) {
+                        $amt .= '<br><small class="text-muted">(' . $orders->fields['order_total'] . ')</small>';
+                    }
 
-                // status color logic (Bootstrap labels)
-                // 1=Pending (Warning), 2=Processing (Info), 3=Delivered (Success), Others (Default)
-                switch ($statusId) {
-                    case 1: $labelClass = 'label-warning'; break; // pending
-                    case 2: $labelClass = 'label-info'; break;    // processing
-                    case 3: $labelClass = 'label-success'; break; // delivered
-                    case 4: $labelClass = 'label-primary'; break; // room for other statuses
-                    default: $labelClass = 'label-default';
-                }
+                    $sql = "SELECT op.orders_products_id, op.products_quantity AS qty, op.products_name AS name, op.products_model AS model
+                            FROM " . TABLE_ORDERS_PRODUCTS . " op
+                            WHERE op.orders_id = " . (int)$oID;
 
-                // product details for Popover (quick preview)
-                $product_details = '';
-                $sql_prod = "SELECT products_quantity, products_name, products_model
-                                 FROM " . TABLE_ORDERS_PRODUCTS . "
-                                 WHERE orders_id = " . (int)$oID;
-                $products = $db->Execute($sql_prod);
-                foreach ($products as $prod) {
-                    $product_details .= $prod['products_quantity'] . ' x ' . $prod['products_name'] . '<br>';
-                }
-                if (strlen($product_details) > 0) $product_details = '<div style=\'font-size:12px\'>' . $product_details . '</div>';
+                    $orderProducts = $db->Execute($sql, false, true, 1800);
+                    $product_details = '';
+
+                    foreach($orderProducts as $product) {
+                        $product_details .= $product['qty'] . ' x ' . $product['name'] . (!empty($product['model']) ? ' (' . $product['model'] . ')' :''). "\n";
+
+                        if ($includeAttributesInPopoverRows) {
+                            $sql = "SELECT products_options, products_options_values
+                                    FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . "
+                                    WHERE orders_products_id = " . (int)$product['orders_products_id'] . " ORDER BY orders_products_attributes_id ASC";
+                            $productAttributes = $db->Execute($sql, false, true, 1800);
+                            foreach ($productAttributes as $attr) {
+                                if (!empty($attr['products_options'])) {
+                                    $product_details .= '&nbsp;&nbsp;- ' . $attr['products_options'] . ': ' . zen_output_string_protected($attr['products_options_values']) . "\n";
+                                }
+                            }
+                        }
+                        $product_details .= '<hr>';
+                    }
+                    $product_details = rtrim($product_details);
+                    $product_details = preg_replace('~<hr>$~', '', $product_details);
+                    $product_details = nl2br($product_details);
+
+                    $inlineStyle = '';
+                    $lblClass = 'label-default';
+
+                    if (!empty($customColor)) {
+                        $lblClass = 'label';
+                        $inlineStyle = 'background-color: ' . $customColor . '; color: #fff;';
+                    } else {
+                        switch ($statusId) {
+                            case 1: $lblClass = 'label-warning'; break;
+                            case 2: $lblClass = 'label-info'; break;
+                            case 3: $lblClass = 'label-success'; break;
+                            default: $lblClass = 'label-default';
+                        }
+                    }
                 ?>
                 <tr>
-                    <td style="vertical-align: middle;"><strong>#<?php echo $oID; ?></strong></td>
+                    <td><strong>#<?= $oID ?></strong></td>
 
-                    <td style="vertical-align: middle;">
-                        <a href="<?php echo zen_href_link(FILENAME_ORDERS, 'oID=' . $oID . '&action=edit'); ?>" style="font-weight:600; color:#555;">
-                            <?php echo $name; ?>
-                        </a>
-                    </td>
+                    <td><a href="<?= zen_href_link(FILENAME_ORDERS, 'oID=' . $oID . '&action=edit') ?>" style="font-weight:600; color:#555;"><?= $name ?></a></td>
 
-                    <td style="vertical-align: middle;">
-                        <span class="label <?php echo $labelClass; ?>" style="font-size: 90%; font-weight: normal; padding: 4px 8px;">
-                            <?php echo $statusName; ?>
+                    <td>
+                        <span class="label <?= $lblClass ?>" style="<?= $inlineStyle ?>">
+                            <?= $statusName ?>
                         </span>
                     </td>
 
-                    <td class="text-right" style="vertical-align: middle; color: #777;">
-                        <?php echo $date; ?>
+		            <td class="text-right">
+                        <?= $date ?>
                     </td>
 
-                    <td class="text-right" style="vertical-align: middle; font-weight: bold;">
-                        <?php echo $amt; ?>
-                    </td>
+                    <td class="text-right"><strong><?= $amt ?></strong></td>
 
-                    <td class="text-right" style="vertical-align: middle;">
-                        <button type="button" class="btn btn-xs btn-info" data-toggle="popover" data-trigger="hover" data-placement="left" data-html="true" title="<?php echo sprintf(BOX_ORDERS_ORDER, $oID); ?>" data-content="<?php echo zen_output_string_protected($product_details); ?>">
-                            <i class="fa fa-eye"></i>
+                    <td class="text-right">
+                        <button tabindex="0" class="btn btn-xs btn-info orderProductsPopover" role="button"
+                                data-toggle="popover"
+                                data-trigger="focus"
+                                data-placement="left"
+                                data-html="true"
+                                title="<?= TEXT_PRODUCT_POPUP_TITLE ?? 'Products' ?>"
+                                data-content="<?= zen_output_string($product_details, array('"' => '&quot;', "'" => '&#39;', '<br />' => '<br>')) ?>">
+                             <i class="fa fa-eye"></i>
                         </button>
 
-                        <a href="<?php echo zen_href_link(FILENAME_ORDERS_INVOICE, 'oID=' . $oID); ?>" target="_blank" class="btn btn-xs btn-default" title="<?php echo BOX_ORDERS_PRINT_INVOICE; ?>">
+                        <a href="<?= zen_href_link(FILENAME_ORDERS_INVOICE, 'oID=' . $oID) ?>" target="_blank" class="btn btn-xs btn-default" title="<?= BOX_ORDERS_PRINT_INVOICE ?>">
                             <i class="fa fa-print"></i>
                         </a>
 
-                        <a href="<?php echo zen_href_link(FILENAME_ORDERS, 'oID=' . $oID . '&action=edit'); ?>" class="btn btn-xs btn-primary" title="<?php echo BOX_ORDERS_PROCESS; ?>">
+                        <a href="<?= zen_href_link(FILENAME_ORDERS, 'oID=' . $oID . '&action=edit') ?>" class="btn btn-xs btn-primary" title="<?= BOX_ORDERS_VIEW_ORDER ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </td>
                 </tr>
-                <?php
-                $orders->MoveNext();
-            }
-            ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>
 </div>
-
-<script>
-    $(function () {
-        $('[data-toggle="popover"]').popover();
-    })
-</script>

@@ -5,7 +5,9 @@
  * @author ZenExpert - https://zenexpert.com
  */
 
-if (!zen_is_superuser() && !check_page(FILENAME_SALEMAKER, '')) return;
+if (!zen_is_superuser() && !check_page(FILENAME_SALEMAKER, '')) {
+    return;
+}
 
 // prepare data
 // use cached queries (1800s) to keep the dashboard fast
@@ -25,46 +27,42 @@ $result = $db->Execute("SELECT count(*) as count FROM " . TABLE_SALEMAKER_SALES 
 $salemaker_act = $result->fields['count'];
 ?>
 
-<div class="col-md-3 col-sm-6">
+
     <div class="panel widget-wrapper">
         <div class="panel-heading">
-            <i class="fa fa-tags"></i> <?php echo DASHBOARD_SALES; ?>
+            <i class="fa fa-tags"></i> <?= DASHBOARD_SALES ?>
         </div>
 
         <ul class="list-group">
             <li class="list-group-item">
-                <a href="<?php echo zen_href_link(FILENAME_SPECIALS); ?>" style="color: #444; font-weight: 600;"><?php echo BOX_SPECIALS_SPECIALS; ?></a>
+                <a class="link-text" href="<?= zen_href_link(FILENAME_SPECIALS) ?>"><?= BOX_SPECIALS_SPECIALS ?></a>
                 <div class="pull-right">
-                    <span class="label label-success" title="<?php echo BOX_LABEL_ACTIVE; ?>" data-toggle="tooltip"><?php echo $specials_act; ?></span>
-                    <span class="label label-default" title="<?php echo BOX_LABEL_EXPIRED; ?>" data-toggle="tooltip"><?php echo $specials_exp; ?></span>
+                    <span class="label label-success" title="<?= BOX_LABEL_ACTIVE ?>" data-toggle="tooltip"><?= $specials_act ?></span>
+                    <span class="label label-default" title="<?= BOX_LABEL_EXPIRED ?>" data-toggle="tooltip"><?= $specials_exp ?></span>
                 </div>
             </li>
 
             <li class="list-group-item">
-                <a href="<?php echo zen_href_link(FILENAME_FEATURED); ?>" style="color: #444; font-weight: 600;"><?php echo BOX_SPECIALS_FEATURED; ?></a>
+                <a class="link-text" href="<?= zen_href_link(FILENAME_FEATURED) ?>"><?= BOX_SPECIALS_FEATURED ?></a>
                 <div class="pull-right">
-                    <span class="label label-success" title="<?php echo BOX_LABEL_ACTIVE; ?>" data-toggle="tooltip"><?php echo $featured_act; ?></span>
-                    <span class="label label-default" title="<?php echo BOX_LABEL_EXPIRED; ?>" data-toggle="tooltip"><?php echo $featured_exp; ?></span>
+                    <span class="label label-success" title="<?= BOX_LABEL_ACTIVE ?>" data-toggle="tooltip"><?= $featured_act ?></span>
+                    <span class="label label-default" title="<?= BOX_LABEL_EXPIRED ?>" data-toggle="tooltip"><?= $featured_exp ?></span>
                 </div>
             </li>
 
             <li class="list-group-item">
-                <a href="<?php echo zen_href_link(FILENAME_SALEMAKER); ?>" style="color: #444; font-weight: 600;"><?php echo BOX_SPECIALS_SALEMAKER; ?></a>
+                <a class="link-text" href="<?= zen_href_link(FILENAME_SALEMAKER) ?>"><?= BOX_SPECIALS_SALEMAKER ?></a>
                 <div class="pull-right">
-                    <span class="label label-success" title="<?php echo BOX_LABEL_ACTIVE; ?>" data-toggle="tooltip"><?php echo $salemaker_act; ?></span>
-                    <span class="label label-default" title="<?php echo BOX_LABEL_EXPIRED; ?>" data-toggle="tooltip"><?php echo $salemaker_exp; ?></span>
+                    <span class="label label-success" title="<?= BOX_LABEL_ACTIVE ?>" data-toggle="tooltip"><?= $salemaker_act ?></span>
+                    <span class="label label-default" title="<?= BOX_LABEL_EXPIRED ?>" data-toggle="tooltip"><?= $salemaker_exp ?></span>
                 </div>
             </li>
         </ul>
 
-        <div class="panel-footer text-center" style="background: #fff; padding: 8px;">
-            <small class="text-muted"><span class="text-success">■ <?php echo BOX_LABEL_ACTIVE; ?></span> &nbsp; <span style="color: #777;">■ <?php echo BOX_LABEL_EXPIRED; ?></span></small>
+        <div class="panel-footer text-center">
+            <small class="text-muted">
+                <span class="text-success"><i class="fa fa-square"></i> <?= BOX_LABEL_ACTIVE ?></span>
+                <span class="label-inactive-text"><i class="fa fa-square"></i> <?= BOX_LABEL_EXPIRED ?></span>
+            </small>
         </div>
     </div>
-</div>
-
-<script>
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-</script>

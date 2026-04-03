@@ -6,7 +6,9 @@
  * @author ZenExpert - https://zenexpert.com
  */
 
-if (!zen_is_superuser() && !check_page(FILENAME_STATS_SALES_REPORT_GRAPHS, '')) return;
+if (!zen_is_superuser() && !check_page(FILENAME_STATS_SALES_REPORT_GRAPHS, '')) {
+    return;
+}
 
 // prepare data (last 30 days)
 
@@ -38,17 +40,16 @@ $sql = "SELECT date(o.date_purchased) as sale_date,
         AND o.date_purchased >= DATE_SUB(NOW(), INTERVAL " . (int)$days_to_show . " DAY)
         GROUP BY sale_date";
 
-$result = $db->Execute($sql);
+$results = $db->Execute($sql);
 
-while (!$result->EOF) {
-    $day = $result->fields['sale_date'];
+foreach ($results as $result) {
+    $day = $result['sale_date'];
 
     // map data if date falls within range
     if (isset($sales_data[$day])) {
-        $sales_data[$day] = (float)$result->fields['total_sales'];
-        $orders_data[$day] = (int)$result->fields['total_orders'];
+        $sales_data[$day] = (float)$result['total_sales'];
+        $orders_data[$day] = (int)$result['total_orders'];
     }
-    $result->MoveNext();
 }
 
 // prepare JSON for JS
@@ -58,7 +59,7 @@ $js_orders_data = json_encode(array_values($orders_data));
 
 ?>
 
-<div style="position: relative; height: 350px; width: 100%;">
+<div class="sales-report-widget">
     <canvas id="dashboardSalesChart"></canvas>
 </div>
 
@@ -73,11 +74,11 @@ $js_orders_data = json_encode(array_values($orders_data));
         var chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: <?php echo $js_labels; ?>,
+                labels: <?= $js_labels ?>,
                 datasets: [
                     {
-                        label: '<?php echo BOX_SALES_LABEL_REVENUE; ?>',
-                        data: <?php echo $js_sales_data; ?>,
+                        label: '<?= BOX_SALES_LABEL_REVENUE ?>',
+                        data: <?= $js_sales_data ?>,
                         borderColor: '#337ab7', // Blue
                         backgroundColor: gradientSales,
                         borderWidth: 2,
@@ -89,8 +90,8 @@ $js_orders_data = json_encode(array_values($orders_data));
                         yAxisID: 'y'
                     },
                     {
-                        label: '<?php echo BOX_SALES_LABEL_ORDERS; ?>',
-                        data: <?php echo $js_orders_data; ?>,
+                        label: '<?= BOX_SALES_LABEL_ORDERS ?>',
+                        data: <?= $js_orders_data ?>,
                         borderColor: '#d9534f',
                         backgroundColor: 'rgba(217, 83, 79, 0.1)',
                         borderWidth: 2,
@@ -122,8 +123,8 @@ $js_orders_data = json_encode(array_values($orders_data));
                                 var label = context.dataset.label || '';
                                 var value = context.parsed.y;
 
-                                if (label === '<?php echo BOX_SALES_LABEL_REVENUE; ?>') {
-                                    return label + ': ' + new Intl.NumberFormat('<?php echo BOX_SALES_GRAPH_NUMBER_FORMAT; ?>', { style: 'currency', currency: '<?php echo DEFAULT_CURRENCY; ?>' }).format(value);
+                                if (label === '<?= BOX_SALES_LABEL_REVENUE ?>') {
+                                    return label + ': ' + new Intl.NumberFormat('<?= BOX_SALES_GRAPH_NUMBER_FORMAT ?>', { style: 'currency', currency: '<?= DEFAULT_CURRENCY ?>' }).format(value);
                                 } else {
                                     return label + ': ' + value;
                                 }
@@ -139,14 +140,14 @@ $js_orders_data = json_encode(array_values($orders_data));
                         type: 'linear',
                         display: true,
                         position: 'left',
-                        title: { display: false, text: '<?php echo BOX_SALES_LABEL_REVENUE; ?>' },
+                        title: { display: false, text: '<?= BOX_SALES_LABEL_REVENUE ?>' },
                         grid: { color: 'rgba(0,0,0,0.05)' }
                     },
                     y1: {
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        title: { display: false, text: '<?php echo BOX_SALES_LABEL_ORDERS; ?>' },
+                        title: { display: false, text: '<?= BOX_SALES_LABEL_ORDERS ?>' },
                         grid: { display: false },
                         min: 0,
                         suggestedMax: 10
