@@ -17,10 +17,9 @@ $sql = "SELECT p.products_id, pd.products_name, p.products_image, p.products_mod
         JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id AND pd.language_id = " . (int)$_SESSION['languages_id'] . ")
         WHERE o.date_purchased >= DATE_SUB(NOW(), INTERVAL 30 DAY)
         GROUP BY p.products_id, pd.products_name, p.products_image, p.products_model
-        ORDER BY total_sold DESC
-        LIMIT 5";
+        ORDER BY total_sold DESC";
 
-$top_products = $db->Execute($sql);
+$top_products = $db->Execute($sql, 5, true, 1800);
 ?>
 
 <div class="panel widget-wrapper">
