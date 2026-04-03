@@ -20,18 +20,18 @@ $spider_array = $whos_online_stats['spider_array'];
 
 // helper to map the 4 distinct states
 // 0=ActiveWithCart, 1=InactiveWithCart, 2=ActiveNoCart, 3=InactiveNoCart
-function get_detailed_counts($arr) {
+$get_detailed_counts = static function ($arr) {
     return [
         'active_cart'   => (int)$arr[0], // Green: Shopping Now
         'idle_cart'     => (int)$arr[1], // Yellow: Cart but Idle
         'active_browse' => (int)$arr[2], // Blue: Just Looking
         'idle_browse'   => (int)$arr[3]  // Gray: Inactive
     ];
-}
+};
 
-$users   = get_detailed_counts($user_array);
-$guests  = get_detailed_counts($guest_array);
-$spiders = get_detailed_counts($spider_array);
+$users   = $get_detailed_counts($user_array);
+$guests  = $get_detailed_counts($guest_array);
+$spiders = $get_detailed_counts($spider_array);
 ?>
 
 <div class="panel widget-wrapper">
