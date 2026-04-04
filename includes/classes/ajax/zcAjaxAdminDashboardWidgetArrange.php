@@ -46,6 +46,10 @@ class zcAjaxAdminDashboardWidgetArrange extends base
             if (isset($layout[$zone]) && is_array($layout[$zone])) {
                 $clean_layout[$zone] = [];
                 foreach ($layout[$zone] as $widget) {
+                    // extra precaution in case a ghost element somehow gets through
+                    if (!is_string($widget) || empty(trim($widget))) {
+                        continue;
+                    }
                     // sanitize: filenames should only contain alphanumeric, underscore, dot
                     $clean_widget = preg_replace('/[^a-zA-Z0-9_\.]/', '', $widget);
                     if (!empty($clean_widget)) {
