@@ -80,8 +80,16 @@ $(function () {
         });
 
         // AJAX save
-        $.post('ajax_dashboard.php', {layout: layout}, function (response) {
-            console.log("Layout Saved");
+        zcJS.ajax({
+            url: "ajax.php?act=ajaxAdminDashboardWidgetArrange&method=save",
+            data: {layout: JSON.stringify(layout)}
+        }).done(function(response ) {
+            //console.log(response);
+            if (response.error === true) {
+                if (window.console && typeof(console.log) === 'function') {
+                    console.log(response.message);
+                }
+            }
         });
     }
     $(function () {
