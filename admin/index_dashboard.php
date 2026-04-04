@@ -168,7 +168,9 @@ foreach ($widgets as $widget) {
 <html <?php echo HTML_PARAMS; ?>>
 <head>
     <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+            integrity="sha384-8Yq0P9w/6S9m5G4DqRLVQjaxAg/P6MqxsVXni4eWh05rq6ArtyTc95xJ3Adxpv8u"
+            crossorigin="anonymous"></script>
 </head>
 <body class="indexDashboard">
 
