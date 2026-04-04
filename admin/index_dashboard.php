@@ -57,7 +57,7 @@ if (!is_array($zones) || empty($zones)) {
 function render_zone($zone_name, $widgets_array)
 {
     /** Globals needed inside widgets */
-    global $db, $zco_notifier, $messageStack;
+    global $db, $zco_notifier, $messageStack, $zcDate;
 
     // Define the accepted base path for widgets to prevent LFI vulnerabilities
     $acceptedPath = realPath(DIR_FS_CATALOG);
