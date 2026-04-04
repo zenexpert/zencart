@@ -85,7 +85,7 @@ if ($result->RecordCount()) {
 
             <li class="list-group-item">
                 <span class="link-text"><?= BOX_TITLE_TOTAL_VISITS ?></span>
-                <small class="text-muted">Since <?= $counter_date ?></small>
+                <small class="text-muted"><?= sprintf(TEXT_SINCE_DATE, $counter_date) ?></small>
                 <div class="pull-right" style="margin-top: -15px;">
                      <span class="badge base-counter-badge">
                         <?= number_format($counter) ?>
