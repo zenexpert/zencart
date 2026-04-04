@@ -11,13 +11,14 @@ if (typeof zcJS == "undefined" || !zcJS) {
 }
 
 zcJS.ajax = function (options) {
+    const csrfToken = '<?= $_SESSION['securityToken'] ?>';
     options.url = options.url.replace("&amp;", "&");
 <?php
     // -----
     // The 'options.data' supplied by the caller can be:
     //
-    // - empty/undefined. In this case, it's set to an empty object. The security
-    //   token is added via jQuery.extend.
+    // - empty/undefined. In this case, it's set to an empty object. The CSRF
+    //   token is sent using a request header.
     //
 ?>
     if (typeof options.data === 'undefined') {
@@ -25,19 +26,18 @@ zcJS.ajax = function (options) {
 <?php
     // -----
     // - A string, presumed to be a URL-encoded string created by the javascript
-    //   serialize function. In this case, the securityToken parameter is appended.
+    //   serialize function. In this case, the legacy securityToken parameter is appended.
     //
 ?>
     } else if (typeof options.data === 'string') {
-        options.data += '&securityToken=<?= $_SESSION['securityToken'] ?>';
+        options.data += '&securityToken=' + encodeURIComponent(csrfToken);
 <?php
     // -----
     // - An array, possibly created via the javascript serializeArray function on a
     //   form's variables. If the array is found to be of that form, the name/value array
-    //   is converted into its object format. The security token is added via a jQuery.extend.
+    //   is converted into its object format.
     //
-    // - Otherwise, the input is presumed to be an object, to which the security
-    //   token is added via a jQuery.extend.
+    // - Otherwise, the input is presumed to be an object and is left untouched.
     //
 ?>
     } else if (Array.isArray(options.data) && options.data.length !== 0) {
@@ -65,9 +65,13 @@ zcJS.ajax = function (options) {
                 traditional: true,
                 dataType: 'json',
                 timeout: 5000,
-                data: jQuery.extend(true, {}, options.data, {securityToken: '<?= $_SESSION['securityToken'] ?>'}),
+                headers: {
+                    'X-CSRF-Token': csrfToken
+                },
+                data: options.data,
             },
             settings = jQuery.extend(true, {}, defaults, options);
+        settings.headers = jQuery.extend(true, {}, defaults.headers, options.headers);
         if (typeof(console.log) == 'function') {
             console.log(JSON.stringify(settings));
         }
