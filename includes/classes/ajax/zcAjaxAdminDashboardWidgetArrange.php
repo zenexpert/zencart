@@ -63,13 +63,13 @@ class zcAjaxAdminDashboardWidgetArrange extends base
 
         $json_data = json_encode($clean_layout);
 
-if ($json_data === '{"main":[],"sidebar":[],"bottom":[]}') {
-    return $this->response('problem', 'layout not parsed.', true);
-}
+        if ($json_data === '{"main":[],"sidebar":[],"bottom":[]}') {
+            return $this->response('problem', 'layout not parsed.', true);
+        }
 
-        $db->Execute("UPDATE " . TABLE_CONFIGURATION . "
-              SET configuration_value = '" . $db->prepare_input($json_data) . "'
-              WHERE configuration_key = 'DASHBOARD_WIDGETS_CONFIG'");
+        $db->Execute("UPDATE " . TABLE_ADMIN . "
+              SET dashboard_layout = '" . $db->prepare_input($json_data) . "'
+              WHERE admin_id = " . $_SESSION['admin_id']);
 
         return $this->response('success', 'Layout saved');
     }
