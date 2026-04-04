@@ -2,12 +2,12 @@
 /**
  * @copyright Copyright 2003-2025 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 02 Modified in v2.2.0 $
+ * @version $Id: DrByte 2025 Oct 02 Modified in v3.0.0 $
  */
 ?>
 <script title="zcJS.ajax">
 if (typeof zcJS == "undefined" || !zcJS) {
-    window.zcJS = {name: 'zcJS', version: '0.1.2.2'};
+    window.zcJS = {name: 'zcJS', version: '3.0'};
 }
 
 zcJS.ajax = function (options) {
