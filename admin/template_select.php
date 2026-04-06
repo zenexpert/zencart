@@ -155,7 +155,7 @@ switch ($action) {
             }
             $template_array[] = [
                 'id' => $key,
-                'text' => $value['name'],
+                'text' => $value['name'] . ' (' . ($value['version'] ?? 'V0') . ')',
             ];
         }
         $lns = zen_get_template_languages_not_registered();
@@ -194,7 +194,7 @@ switch ($action) {
             if (isset($value['missing'])) {
                 continue;
             }
-            $template_array[] = ['id' => $key, 'text' => $value['name']];
+            $template_array[] = ['id' => $key, 'text' => $value['name'] . ' (' . ($value['version'] ?? 'V0') . ')',];
         }
         $contents[] = [
             'text' =>
