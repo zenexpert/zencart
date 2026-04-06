@@ -4,6 +4,8 @@
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: DrByte 2025 Dec 01 Modified in v2.2.1 $
+ *
+ * Note: This file does not render on the admin home page.
  */
 
 // check and display zen cart version and history version in footer
