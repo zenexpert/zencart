@@ -7,7 +7,9 @@
  *
  * @var notifier $zco_notifier
  */
-
+if (!defined('IS_ADMIN_FLAG')) {
+    die('Illegal Access');
+}
 $currencies ??= new currencies();
 
 $widgets = [];
