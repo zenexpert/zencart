@@ -243,3 +243,7 @@ modified_files.txt
 
 # ensure test plugin is not checked in
 zc_plugins/zenTestPlugin
+
+# ignore ppr handler files:
+ppr_listener.php
+ppr_webhook.php
