@@ -54,7 +54,7 @@ if (empty($action) && count($languages) > 1) {
 }
 
 // gv queue check
-if (defined('MODULE_ORDER_TOTAL_GV_SHOW_QUEUE_IN_ADMIN') && MODULE_ORDER_TOTAL_GV_SHOW_QUEUE_IN_ADMIN == 'true') {
+if (defined('MODULE_ORDER_TOTAL_GV_SHOW_QUEUE_IN_ADMIN') && MODULE_ORDER_TOTAL_GV_SHOW_QUEUE_IN_ADMIN === 'true' && (zen_is_superuser() || check_page(FILENAME_GV_QUEUE, ''))) {
     $new_gv_queue = $db->Execute("SELECT * FROM " . TABLE_COUPON_GV_QUEUE . " WHERE release_flag='N'");
     $new_gv_queue_cnt = 0;
     if ($new_gv_queue->RecordCount() > 0) {
@@ -218,8 +218,9 @@ foreach ($upperMenuArray as $menuItem) {
 
     <div style="height: 50px;"></div>
 
-<?php require(DIR_WS_INCLUDES . 'header_navigation.php') ?>
+<?php require DIR_WS_INCLUDES . 'header_navigation.php'; ?>
 
+<?php if (zen_is_superuser() || check_page(FILENAME_ADMIN_ACTIVITY, '')) { ?>
     <div class="container-fluid admin-alerts-wrapper noprint">
         <?php if (isset($_SESSION['reset_admin_activity_log']) && ($_SESSION['reset_admin_activity_log'] == true && (basename($PHP_SELF) == FILENAME_DEFAULT . '.php'))) { ?>
             <div class="alert alert-danger text-center mb-3">
@@ -232,8 +233,9 @@ foreach ($upperMenuArray as $menuItem) {
         <?php } ?>
 
     </div>
+<?php } ?>
 
-<?php if($messageStack->size > 0) { ?>
+<?php if ($messageStack->size > 0) { ?>
     <div class="container-fluid mb-3">
         <?= $messageStack->output() ?>
     </div>

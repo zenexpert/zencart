@@ -186,7 +186,7 @@ if (WARN_DATABASE_VERSION_PROBLEM != 'false') {
   }
 
 // check activity log size
-  if (basename($PHP_SELF) == FILENAME_DEFAULT . '.php') {
+  if (basename($PHP_SELF) == FILENAME_DEFAULT . '.php' && (zen_is_superuser() || check_page(FILENAME_ADMIN_ACTIVITY, ''))) {
     $show_admin_activity_log_link = false;
 
     $chk_admin_log = $db->Execute("SELECT count(log_id) AS counter FROM " . TABLE_ADMIN_ACTIVITY_LOG);
