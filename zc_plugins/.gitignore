@@ -8,5 +8,6 @@ zenTestPlugin/
 #specifically allow the following, using the ! prefix:
 !DisplayLogs/
 !PayPalRestful/
+!POSM/
 !SystemInspection/
 !ScanAdditionalImages/
