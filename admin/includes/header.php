@@ -191,7 +191,7 @@ foreach ($upperMenuArray as $menuItem) {
                             <?php if (!empty($plugin_menu_items)) { ?>
                                 <li class="divider"></li>
                                 <?php foreach ($plugin_menu_items as $item) { ?>
-                                    <li><a href="<?= $item['a'] ?>" <?= (isset($item['params']) ? $item['params'] : '') ?>><i class="fa fa-plug"></i> <?= $item['title'] ?></a></li>
+                                    <li><a href="<?= $item['a'] ?>" <?= $item['params'] ?? '' ?>><i class="fa <?= $item['fa-icon'] ?? 'fa-plug' ?>"></i> <?= $item['title'] ?></a></li>
                                 <?php } ?>
                             <?php } ?>
 
