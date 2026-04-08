@@ -204,7 +204,10 @@ foreach ($upperMenuArray as $menuItem) {
                                 <span class="info-val"><?= $admin_host ?></span>
 
                                 <span class="info-label"><?= HEADER_TEXT_TIMEZONE ?></span>
-                                <span class="info-val"><?= $admin_tz . ($admin_locale ? ' (' . $admin_locale . ')' : '') ?></span>
+                                <span class="info-val"><?= $admin_tz ?></span>
+
+                                <span class="info-label"><?= HEADER_TEXT_LOCALE ?></span>
+                                <span class="info-val"><?= $admin_locale ?></span>
                             </li>
 
                             <li class="divider"></li>
