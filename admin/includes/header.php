@@ -130,6 +130,12 @@ foreach ($upperMenuArray as $menuItem) {
                 ?>
 
                 <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden-xs">
+                        <a href="<?= zen_href_link(FILENAME_DEFAULT) ?>" title="<?= HEADER_TITLE_TOP ?>">
+                            <i class="fa fa-home"></i> <?= HEADER_TITLE_TOP ?>
+                        </a>
+                    </li>
+
                     <?php if (!empty($new_gv_queue_cnt)) { ?>
                         <li>
                             <a href="<?= zen_href_link(FILENAME_GV_QUEUE) ?>" title="<?= strip_tags(IMAGE_GIFT_QUEUE) ?>">
@@ -141,7 +147,7 @@ foreach ($upperMenuArray as $menuItem) {
 
                     <li>
                         <a href="<?= zen_catalog_href_link(FILENAME_DEFAULT) ?>" target="_blank" title="<?= HEADER_TITLE_ONLINE_CATALOG ?>" rel="noopener">
-                            <i class="fa fa-external-link"></i> <span class="visible-xs-inline"> <?= HEADER_TITLE_ONLINE_CATALOG ?></span>
+                            <i class="fa fa-store"></i> <?= HEADER_TITLE_ONLINE_CATALOG ?>
                         </a>
                     </li>
 
