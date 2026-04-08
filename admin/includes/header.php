@@ -72,7 +72,7 @@ $admin_locale = setlocale(LC_TIME, 0);
 
 $upperMenuArray = [
         [ 'a' => zen_href_link(FILENAME_DEFAULT), 'title' => HEADER_TITLE_TOP ],
-        [ 'a' => zen_catalog_href_link(FILENAME_DEFAULT), 'title' => HEADER_TITLE_ONLINE_CATALOG ],
+        [ 'a' => zen_catalog_href_link(FILENAME_DEFAULT), 'title' => HEADER_TITLE_ONLINE_CATALOG, 'params' => 'target="_blank" rel="noopener"' ],
         [ 'a' => 'https://www.zen-cart.com/forum', 'title' => HEADER_TITLE_SUPPORT_SITE ],
         [ 'a' => zen_href_link(FILENAME_SERVER_INFO), 'title' => HEADER_TITLE_VERSION ],
         [ 'a' => zen_href_link(FILENAME_ADMIN_ACCOUNT), 'title' => HEADER_TITLE_ACCOUNT ],
@@ -140,7 +140,7 @@ foreach ($upperMenuArray as $menuItem) {
                     <?php } ?>
 
                     <li>
-                        <a href="<?= zen_catalog_href_link(FILENAME_DEFAULT) ?>" target="_blank" title="<?= HEADER_TITLE_ONLINE_CATALOG ?>">
+                        <a href="<?= zen_catalog_href_link(FILENAME_DEFAULT) ?>" target="_blank" title="<?= HEADER_TITLE_ONLINE_CATALOG ?>" rel="noopener">
                             <i class="fa fa-external-link"></i> <span class="visible-xs-inline"> <?= HEADER_TITLE_ONLINE_CATALOG ?></span>
                         </a>
                     </li>
