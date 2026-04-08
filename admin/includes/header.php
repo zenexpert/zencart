@@ -55,9 +55,9 @@ if (empty($action) && count($languages) > 1) {
 }
 
 // gv queue check
+$new_gv_queue_cnt = 0;
 if (defined('MODULE_ORDER_TOTAL_GV_SHOW_QUEUE_IN_ADMIN') && MODULE_ORDER_TOTAL_GV_SHOW_QUEUE_IN_ADMIN === 'true' && (zen_is_superuser() || check_page(FILENAME_GV_QUEUE, ''))) {
     $new_gv_queue = $db->Execute("SELECT * FROM " . TABLE_COUPON_GV_QUEUE . " WHERE release_flag='N'");
-    $new_gv_queue_cnt = 0;
     if ($new_gv_queue->RecordCount() > 0) {
         $new_gv_queue_cnt = $new_gv_queue->RecordCount();
         $goto_gv = '<a href="' . zen_href_link(FILENAME_GV_QUEUE) . '">' . '<span class="btn btn-info">' . IMAGE_GIFT_QUEUE . '</span></a>';
