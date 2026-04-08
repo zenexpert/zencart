@@ -19,6 +19,7 @@ if (defined('STRICT_ERROR_REPORTING') && STRICT_ERROR_REPORTING == true) {
 require_once DIR_WS_INCLUDES . 'javascript_loader.php';
 
 // -----
+// Admin Framework Incompatibility Alerting for old addons:
 // If the current page-load did not use the admin_html_head.php for the CSS files'
 // loading, let the admin know via message and log a PHP Deprecated issue ... once for
 // each page during an admin's session.
