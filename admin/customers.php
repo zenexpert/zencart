@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 03 Modified in v2.2.0 $
+ * @version $Id: lat9 2026 Mar 17 Modified in v2.2.1 $
  */
 require 'includes/application_top.php';
 
@@ -34,7 +34,7 @@ if (!empty($action)) {
             $customer = new Customer($customers_id);
             $custinfo = $customer->getData();
             if (empty($custinfo)) {
-                zen_redirect(zen_href_list(FILENAME_CUSTOMERS, zen_get_all_get_params(['cID', 'action'])));
+                zen_redirect(zen_href_link(FILENAME_CUSTOMERS, zen_get_all_get_params(['cID', 'action'])));
             }
 
             $current_authorization = $custinfo['customers_authorization'];
@@ -1337,6 +1337,7 @@ if ($action === 'edit' || $action === 'update') {
         }
     }
 
+    $customers_query_numrows = $customers_query_numrows ?? 0;
     $customers_split = new splitPageResults(
         $_GET['page'],
         MAX_DISPLAY_SEARCH_RESULTS_CUSTOMER,

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 03 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Jan 06 Modified in v2.2.1 $
  */
 require 'includes/application_top.php';
 $currencies = new currencies();
@@ -415,6 +415,7 @@ switch ($_GET['action']) {
                   $cc_query_raw = "SELECT *
                                    FROM " . TABLE_COUPON_REDEEM_TRACK . "
                                    WHERE coupon_id = " . (int)$_GET['cid'];
+                  $cc_query_numrows = $cc_query_numrows ?? 0;
                   $cc_split = new splitPageResults($_GET['reports_page'], MAX_DISPLAY_SEARCH_RESULTS_DISCOUNT_COUPONS_REPORTS, $cc_query_raw, $cc_query_numrows);
                   $cc_list = $db->Execute($cc_query_raw);
                   if ($cc_list->EOF && empty($cInfo)) {
@@ -512,6 +513,7 @@ switch ($_GET['action']) {
                                                            FROM " . TABLE_COUPONS . "
                                                            WHERE coupon_code LIKE '" . $_GET['codebase'] . "%'" . ")
                                    AND crt.coupon_id = c.coupon_id";
+                  $cc_query_numrows = $cc_query_numrows ?? 0;
                   $cc_split = new splitPageResults($_GET['reports_page'], MAX_DISPLAY_SEARCH_RESULTS_DISCOUNT_COUPONS_REPORTS, $cc_query_raw, $cc_query_numrows);
                   $cc_list = $db->Execute($cc_query_raw);
 
@@ -1191,6 +1193,7 @@ switch ($_GET['action']) {
                                      WHERE coupon_type != 'G'" . $mysqlSearch . $mysqlActive;
                   $maxDisplaySearchResults = ((defined('MAX_DISPLAY_SEARCH_RESULTS_DISCOUNT_COUPONS') && (int)MAX_DISPLAY_SEARCH_RESULTS_DISCOUNT_COUPONS > 0) ? (int)MAX_DISPLAY_SEARCH_RESULTS_DISCOUNT_COUPONS : 20);
 
+                  $cc_query_numrows = $cc_query_numrows ?? 0;
                   $cc_split = new splitPageResults($_GET['page'], $maxDisplaySearchResults, $cc_query_raw, $cc_query_numrows);
                   $cc_list = $db->Execute($cc_query_raw);
 

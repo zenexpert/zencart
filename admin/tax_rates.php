@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: piloujp 2025 Aug 22 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 13 Modified in v2.2.1 $
  */
 require('includes/application_top.php');
 
@@ -25,7 +25,7 @@ if (!empty($action)) {
                             '" . zen_db_input($tax_rate) . "',
                             '" . zen_db_input($tax_priority) . "',
                             now())");
-      $new_taxrate_id = $db->Insert_ID();
+      $new_taxrate_id = $db->insert_ID();
 
       for ($i = 0, $n = count($languages); $i < $n; $i++) {
           $tax_description_array = $_POST['tax_description'];
@@ -113,6 +113,7 @@ if (!empty($action)) {
                                     LEFT JOIN " . TABLE_TAX_RATES . " r ON (r.tax_rates_id = rd.tax_rates_id)
                                     LEFT JOIN " . TABLE_GEO_ZONES . " z ON (r.tax_zone_id = z.geo_zone_id)
                                     WHERE r.tax_class_id = tc.tax_class_id AND rd.language_id = " . (int)$_SESSION['languages_id'];
+                $rates_query_numrows = $rates_query_numrows ?? 0;
                 $rates_split = new splitPageResults($_GET['page'], MAX_DISPLAY_SEARCH_RESULTS, $rates_query_raw, $rates_query_numrows);
                 $rates = $db->Execute($rates_query_raw);
                 foreach ($rates as $rate) {

@@ -2,9 +2,9 @@
 # * This SQL script upgrades the core Zen Cart database structure from v2.1.0 to v2.2.0
 # *
 # * @access private
-# * @copyright Copyright 2003-2025 Zen Cart Development Team
+# * @copyright Copyright 2003-2026 Zen Cart Development Team
 # * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-# * @version $Id: piloujp 2025 Oct 23 New in v2.2.0 $
+# * @version $Id: Scott Wilson 2026 Mar 19 Modified in v2.2.1 $
 #
 
 ############ IMPORTANT INSTRUCTIONS ###############
@@ -62,6 +62,7 @@ ALTER TABLE plugin_control MODIFY version varchar(20);
 ALTER TABLE plugin_control_versions MODIFY version varchar(20);
 ALTER TABLE customers ADD COLUMN activation_required tinyint(1) NOT NULL DEFAULT 0 AFTER customers_authorization;
 ALTER TABLE customers ADD COLUMN welcome_email_sent tinyint(1) DEFAULT NULL AFTER activation_required;
+ALTER TABLE orders_status ADD orders_status_color_code VARCHAR(7) DEFAULT NULL AFTER orders_status_name;
 
 #PROGRESS_FEEDBACK:!TEXT=Updating configuration settings...
 DELETE FROM configuration WHERE configuration_key IN ('REPORT_ALL_ERRORS_ADMIN', 'REPORT_ALL_ERRORS_STORE', 'REPORT_ALL_ERRORS_NOTICE_BACKTRACE');
@@ -72,7 +73,7 @@ UPDATE configuration SET configuration_group_id = 5, sort_order = 53 WHERE confi
 INSERT IGNORE INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('TinyMCE Editor API Key', 'TINYMCE_EDITOR_API_KEY', 'GPL', 'Basic editor features are free, in GPL mode.<br>Optionally enable premium editor features in the TinyMCE editor by providing your account API key and register your store website domain in your Tiny account.<br>Sign up at <a href="https://www.tiny.cloud/auth/signup/" target="_blank">www.tiny.cloud</a><br><br>Default value: <strong>GPL</strong> for free-unregistered mode with basic features.', 1, 111, now());
 UPDATE configuration SET configuration_description = 'CSS Buttons<br>Use CSS buttons instead of images (GIF/JPG)?<br>Button styles must be configured in the stylesheet if you enable this option.<br>Yes - Use CSS buttons<br>No - Use images buttons<br>Found - Use images if exist, else use CSS buttons', set_function = 'zen_cfg_select_option(array(\'No\', \'Yes\', \'Found\'), ' WHERE configuration_key = 'IMAGE_USE_CSS_BUTTONS' LIMIT 1;
 INSERT IGNORE INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, set_function) VALUES ('Account Activation Required?', 'CUSTOMERS_ACTIVATION_REQUIRED', 'false', 'Require customer-account activation? If set to <code>true</code>, an activation link is sent to the email address supplied by the customer. The customer must click on that link to activate their account.', 5, 60, NULL, now(), 'zen_cfg_select_option([\'true\', \'false\'], ');
-INSERT IGNORE INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Account Activation Token Length', 'CUSTOMERS_ACTIVATION_TOKEN_LENGTH', '24', 'Number of characters in a generated account-activation token. Default is 24. Allowed: 12-100, but it affects the URL length, so 10-30 is most ideal', 5, 61, NULL, now(), '{\"error\":\"TEXT_HINT_CUSTOMERS_ACTIVATION_TOKEN_LENGTH\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":12, \"max_range\":100}}}');
+INSERT IGNORE INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Account Activation Token Length', 'CUSTOMERS_ACTIVATION_TOKEN_LENGTH', '24', 'Number of characters in a generated account-activation token. Default is 24. Allowed: 12-100, but it affects the URL length, so 12-30 is most ideal', 5, 61, NULL, now(), '{\"error\":\"TEXT_HINT_CUSTOMERS_ACTIVATION_TOKEN_LENGTH\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":12, \"max_range\":100}}}');
 INSERT IGNORE INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Account Activation Token Valid For', 'CUSTOMERS_ACTIVATION_TOKEN_MINUTES_VALID', '60', 'How many minutes an account-activation token is valid for. Default: 60 minutes (1 hour). Allowed: 1-1440. Best is 60-120 minutes.', 5, 62, NULL, now(), '{\"error\":\"TEXT_HINT_CUSTOMERS_ACTIVATION_TOKEN_VALID_MINUTES\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":1, \"max_range\":1440}}}');
 
 DELETE FROM configuration WHERE configuration_key = 'SESSION_CHECK_SSL_SESSION_ID';
@@ -152,6 +153,13 @@ UPDATE configuration SET configuration_description = 'Do you want to display the
 UPDATE configuration SET configuration_description = 'Do you want to display the Product Price/Add to Cart?<br>0 - Not displayed.<br>n - Displayed, with the number n defining the display order relative to similar options on the product listing page.' WHERE configuration_key = 'PRODUCT_LIST_PRICE' LIMIT 1;
 UPDATE configuration SET configuration_description = 'Do you want to display the Product Quantity?<br>0 - Not displayed.<br>n - Displayed, with the number n defining the display order relative to similar options on the product listing page.' WHERE configuration_key = 'PRODUCT_LIST_QUANTITY' LIMIT 1;
 UPDATE configuration SET configuration_description = 'Do you want to display the Product Weight?<br>0 - Not displayed.<br>n - Displayed, with the number n defining the display order relative to similar options on the product listing page.' WHERE configuration_key = 'PRODUCT_LIST_WEIGHT' LIMIT 1;
+UPDATE configuration SET configuration_description = 'Featured Products And Categories Columns per Row' WHERE configuration_key = 'SHOW_PRODUCT_INFO_COLUMNS_FEATURED_PRODUCTS';
+
+#PROGRESS_FEEDBACK:!TEXT=Setting default order-status colors...
+UPDATE orders_status SET orders_status_color_code = '#f0ad4e' WHERE orders_status_id = 1 AND orders_status_color_code IS NULL;
+UPDATE orders_status SET orders_status_color_code = '#5bc0de' WHERE orders_status_id = 2 AND orders_status_color_code IS NULL;
+UPDATE orders_status SET orders_status_color_code = '#5cb85c' WHERE orders_status_id = 3 AND orders_status_color_code IS NULL;
+UPDATE orders_status SET orders_status_color_code = '#ff00ff' WHERE orders_status_id = 4 AND orders_status_color_code IS NULL;
 
 
 #PROGRESS_FEEDBACK:!TEXT=Finalizing ... Done!
@@ -165,7 +173,33 @@ SELECT project_version_key, project_version_major, project_version_minor, projec
 FROM project_version;
 
 ## Now set to new version
-UPDATE project_version SET project_version_major='2', project_version_minor='2.0-alpha', project_version_patch1='', project_version_patch1_source='', project_version_patch2='', project_version_patch2_source='', project_version_comment='Version Update 2.1.0->2.2.0-alpha', project_version_date_applied=now() WHERE project_version_key = 'Zen-Cart Main';
-UPDATE project_version SET project_version_major='2', project_version_minor='2.0-alpha', project_version_patch1='', project_version_patch1_source='', project_version_patch2='', project_version_patch2_source='', project_version_comment='Version Update 2.1.0->2.2.0-alpha', project_version_date_applied=now() WHERE project_version_key = 'Zen-Cart Database';
+SET @VERSION_MAJOR = '2';
+SET @VERSION_MINOR = '2.1';
+SET @DB_MAJOR = '2';
+SET @DB_MINOR = '2.0';
+
+UPDATE project_version
+SET
+    project_version_major = @VERSION_MAJOR,
+    project_version_minor = @VERSION_MINOR,
+    project_version_patch1 = '',
+    project_version_patch1_source = '',
+    project_version_patch2 = '',
+    project_version_patch2_source = '',
+    project_version_comment = CONCAT('Version Update to ', @VERSION_MAJOR, '.', @VERSION_MINOR),
+    project_version_date_applied = now()
+WHERE project_version_key = 'Zen-Cart Main';
+
+UPDATE project_version 
+SET 
+    project_version_major = @DB_MAJOR,
+    project_version_minor = @DB_MINOR,
+    project_version_patch1 = '',
+    project_version_patch1_source = '',
+    project_version_patch2 = '',
+    project_version_patch2_source = '',
+    project_version_comment = CONCAT('Version Update to ', @DB_MAJOR, '.', @DB_MINOR),
+    project_version_date_applied = now() 
+WHERE project_version_key = 'Zen-Cart Database';
 
 ##### END OF UPGRADE SCRIPT

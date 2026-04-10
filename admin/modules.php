@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 30 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Jan 26 Modified in v2.2.1 $
  */
 use Zencart\FileSystem\FileSystem;
 use Zencart\ResourceLoaders\ModuleFinder;
@@ -48,7 +48,7 @@ switch ($set) {
         break;
 }
 
-$moduleFinder = new ModuleFinder($module_type, new Filesystem());
+$moduleFinder = new ModuleFinder($module_type, new FileSystem());
 $modules_found = $moduleFinder->findFromFilesystem($installedPlugins);
 
 $notificationType = $module_type . (($_GET['module']) ? '-' . $_GET['module'] : '') ;
@@ -57,7 +57,7 @@ $availableNotifications = $notifications->getNotifications($notificationType, $_
 
 $action = $_GET['action'] ?? '';
 if (!empty($action)) {
-    $admname = '{' . preg_replace('/[^\w]/', '*', zen_get_admin_name()) . '[' . (int)$_SESSION['admin_id'] . ']}';
+    $admname = '{' . preg_replace('/\W/', '*', zen_get_admin_name()) . '[' . (int)$_SESSION['admin_id'] . ']}';
     switch ($action) {
         case 'save':
             $class = basename($_GET['module']);
@@ -86,7 +86,7 @@ if (!empty($action)) {
             }
             $msg = sprintf(
                 TEXT_EMAIL_MESSAGE_ADMIN_SETTINGS_CHANGED,
-                preg_replace('/[^\w]/', '*', (!empty($_GET['module']) ? $_GET['module'] : (!empty($_GET['set']) ? $_GET['set'] : 'UNKNOWN'))),
+                preg_replace('/\W/', '*', (!empty($_GET['module']) ? $_GET['module'] : (!empty($_GET['set']) ? $_GET['set'] : 'UNKNOWN'))),
                 $admname
             );
             zen_record_admin_activity($msg, 'warning');
@@ -116,7 +116,7 @@ if (!empty($action)) {
                 if ($languageLoader->loadModuleLanguageFile($class_file, $module_type)) {
                     require DIR_FS_CATALOG . $modules_found[$class_file] . $class_file;
                     $module = new $class();
-                    $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_MODULE_INSTALLED, preg_replace('/[^\w]/', '*', $_POST['module']), $admname);
+                    $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_MODULE_INSTALLED, preg_replace('/\W/', '*', $_POST['module']), $admname);
                     zen_record_admin_activity($msg, 'warning');
                     zen_mail(
                         STORE_NAME,
@@ -147,7 +147,7 @@ if (!empty($action)) {
                 if ($languageLoader->loadModuleLanguageFile($class_file, $module_type)) {
                     require DIR_FS_CATALOG . $modules_found[$class_file] . $class_file;
                     $module = new $class();
-                    $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_MODULE_REMOVED, preg_replace('/[^\w]/', '*', $_POST['module']), $admname);
+                    $msg = sprintf(TEXT_EMAIL_MESSAGE_ADMIN_MODULE_REMOVED, preg_replace('/\W/', '*', $_POST['module']), $admname);
                     zen_record_admin_activity($msg, 'warning');
                     zen_mail(
                         STORE_NAME,
@@ -174,7 +174,10 @@ $modules_for_display = [];
 $module_directory = DIR_FS_CATALOG . DIR_WS_MODULES . $module_type;
 foreach ($modules_found as $module_name => $module_file_dir) {
     if (!$languageLoader->loadModuleLanguageFile($module_name, $module_type)) {
-        echo ERROR_MODULE_FILE_NOT_FOUND . DIR_FS_CATALOG_LANGUAGES . $_SESSION['language'] . '/modules/' . $module_type . '/' . $module_name . '<br>';
+        if (!str_starts_with($module_name, 'lang.')) {
+            $module_name = str_replace($lang_file, $module_name, 'lang.' . $module_name);
+        }
+        $messageStack->add(ERROR_MODULE_FILE_NOT_FOUND . DIR_FS_CATALOG_LANGUAGES . $_SESSION['language'] . '/modules/' . $module_type . '/' . $module_name, 'caution');;
         continue;
     }
 
@@ -244,9 +247,9 @@ zen_update_modules_cache($module_type);
   <head>
     <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
       <style>
-          .w-40 {width: 40%}
-          .w-20 {width: 20%}
-          .w-10 {width: 10%}
+          .w-40 {width: 40%;}
+          .w-20 {width: 20%;}
+          .w-10 {width: 10%;}
       </style>
   </head>
   <body>
@@ -297,7 +300,7 @@ if ($set === 'payment') {
     <?php
                 } else { // a module row is selected, module is installed, infoBox is only showing module parameters
     ?>
-                  <tr id="defaultSelected" class="dataTableRowSelected" style="cursor:pointer" onclick="document.location.href='<?= zen_href_link(FILENAME_MODULES, 'set=' . $set . '&module=' . $class . '&action=edit', 'SSL') ?>'">
+                  <tr id="defaultSelected" class="dataTableRowSelected" style="cursor:pointer;" onclick="document.location.href='<?= zen_href_link(FILENAME_MODULES, 'set=' . $set . '&module=' . $class . '&action=edit', 'SSL') ?>'">
     <?php
                 }
             } else { // a module row is selected, module is NOT installed
@@ -307,7 +310,7 @@ if ($set === 'payment') {
             }
         } else { // module row is not selected: click to show install option or module parameters
     ?>
-                  <tr class="dataTableRow" style="cursor:pointer" onclick="document.location.href='<?= zen_href_link(FILENAME_MODULES, 'set=' . $set . '&module=' . $class, 'SSL') ?>'">
+                  <tr class="dataTableRow" style="cursor:pointer;" onclick="document.location.href='<?= zen_href_link(FILENAME_MODULES, 'set=' . $set . '&module=' . $class, 'SSL') ?>'">
     <?php
         }
     ?>
@@ -354,7 +357,7 @@ if ($set === 'payment') {
         } else {
             echo
                 '<a href="' . zen_href_link(FILENAME_MODULES, 'set=' . $set . '&module=' . $class, 'SSL') . '" data-toggle="tooltip" title="' . IMAGE_ICON_INFO . '" role="button">' .
-                    zen_icon('circle-info', '', '2x', true, false) .
+                    zen_icon('circle-info', '', '2x', true) .
                 '</a>';
         }
     ?>
@@ -466,7 +469,7 @@ switch ($action) {
                 $keys .= '<b>'. $displayKey . zen_lookup_admin_menu_language_override('configuration_key_title', $key, $value['title']) . '</b><br>';
                 if ($value['use_function']) {
                     $use_function = $value['use_function'];
-                    if (strpos($use_function, '->') !== false) {
+                    if (str_contains($use_function, '->')) {
                         $class_method = explode('->', $use_function);
                         if (!class_exists($class_method[0])) {
                             include_once DIR_WS_CLASSES . $class_method[0] . '.php';

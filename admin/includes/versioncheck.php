@@ -2,9 +2,9 @@
 /**
  * Check if new versions available via the Zen Cart ping server
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Dec 1 New in v2.2.0 $
+ * @version $Id: DrByte 2025 Dec 01 New in v2.2.1 $
  *
  * @since ZC v1.2.0
  * Note from v1.2.0 to 2.1.0 this code was formerly in /admin/includes/header.php
@@ -102,7 +102,7 @@ if (!$doVersionCheck || $versionCheckError) {
     $url .= (str_contains($url, '?') ? '&amp;' : '?') . 'vcheck=yes';
 
     if ($zv_db_patch_ok === true || $version_check_sysinfo === true) {
-        $new_version .= '<a href="' . $url . '" role="button" class="btn btn-link">' . TEXT_VERSION_CHECK_BUTTON . '</a>';
+        $new_version .= '<a href="' . $url . '" role="button" class="btn btn-primary">' . TEXT_VERSION_CHECK_BUTTON . '</a>';
     }
 }
 

@@ -1,8 +1,8 @@
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 17 Modified in v2.2.0 $
+ * @version $Id: Leonard 2026 Feb 14 Modified in v2.2.1 $
  */
 
 body {
@@ -1226,4 +1226,15 @@ tbody>tr>td.align-bottom {
 .ck-editor__editable, .ck-source-editing-area {
     min-height: 250px;
     max-height: 650px;
+}
+
+/* Status Color Picker */
+.status-color-code {
+    color:#fff; font-size: 100%;
+}
+.status-color-code-input .input-group-addon {
+    padding:0; border:none; width:40px; background:none;
+}
+.status-color-code-input #cp-picker {
+    height:34px; width:100%; padding:0; border:none; cursor:pointer;
 }

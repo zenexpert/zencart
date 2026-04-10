@@ -2,10 +2,10 @@
 /**
  * ot_gv order-total module
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: DrByte 2025 Dec 13 Modified in v2.2.1 $
  */
 /**
  * Enter description here...
@@ -155,9 +155,12 @@ class ot_gv {
         if ($order->info['total'] < 0) $order->info['total'] = 0;
         $order->info['tax'] = $order->info['tax'] - $od_amount['tax'];
         // prepare order-total output for display and storing to invoice
-        $this->output[] = array('title' => $this->title . ':',
-                                'text' => '-' . $currencies->format($od_amount['total']),
-                                'value' => $od_amount['total']);
+          $this->output[] = [
+              'title' => $this->title . ':',
+              // &#8209; is a non-break-hyphen so displays with number
+              'text' => '&#8209;' . $currencies->format($od_amount['total']),
+              'value' => $od_amount['total'],
+          ];
       }
     }
   }

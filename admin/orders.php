@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 31 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Feb 26 Modified in v2.2.1 $
  */
 require('includes/application_top.php');
 
@@ -42,6 +42,7 @@ $show_including_tax = (DISPLAY_PRICE_WITH_TAX === 'true');
 // prepare order-status look-up list
 $ordersStatus = zen_getOrdersStatuses();
 $orders_status_array = $ordersStatus['orders_status_array'];
+$status_colors = $ordersStatus['orders_status_colors'] ?? [];
 
 $action = ($_GET['action'] ?? '');
 $order_exists = false;
@@ -108,7 +109,7 @@ if (!empty($action) && $order_exists === true) {
         $order = new order($oID);
         $module = false;
         global $installedPlugins;
-        $moduleFinder = new ModuleFinder('payment', new Filesystem());
+        $moduleFinder = new ModuleFinder('payment', new FileSystem());
         $modules_found = $moduleFinder->findFromFilesystem($installedPlugins);
         $payment = ($order->info['payment_module_code'] ?? 'nothing') . '.php';
         if (array_key_exists($payment, $modules_found) && file_exists(DIR_FS_CATALOG . $modules_found[$payment] . $payment)) {
@@ -381,6 +382,24 @@ if (!empty($action) && $order_exists === true) {
     <head>
         <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
         <link rel="stylesheet" media="print" href="includes/css/stylesheet_print.css">
+        <?php
+        // -----
+        //
+        // Give observers an opportunity to inject additional resources into the
+        // <head> section of the admin orders page.
+        //
+        // Observers may append <link>, <style>, or <script> tags to the $extra_head
+        // variable to load page-specific resources.
+        //
+        // Observer note:
+        // - Append content rather than overwrite existing output
+        // - Multiple observers may contribute resources
+        //
+        $extra_head = '';
+        $zco_notifier->notify('NOTIFY_ADMIN_ORDERS_HEAD', [], $extra_head);
+        echo $extra_head;
+        ?>
+
         <script>
             function couponpopupWindow(url) {
                     window.open(url, 'popupWindow', 'toolbar=no,location=no,directories=no,status=no,menu bar=no,scrollbars=yes,resizable=yes,copyhistory=no,width=450,height=280,screenX=150,screenY=150,top=150,left=150')
@@ -474,6 +493,26 @@ if (!empty($action) && $order_exists === true) {
                         </div>
                     </div>
                 </div>
+                <?php
+                // -----
+                //
+                // Give observers an opportunity to inject additional content into the
+                // admin orders listing view.
+                //
+                // The $oID parameter is passed as (bool)false, since this notifier fires
+                // in the listing context rather than for a specific order.
+                //
+                // Observers may append HTML output (e.g. action controls or informational
+                // elements) to the $extra_listing_content variable for display.
+                //
+                // Observer note:
+                // - Append content rather than overwrite existing output
+                // - Multiple observers may contribute content
+                //
+                $extra_listing_content = '';
+                $zco_notifier->notify('NOTIFY_ADMIN_ORDERS_LISTING_BUTTONS', false, $extra_listing_content);
+                echo $extra_listing_content;
+                ?>
                 <!-- search -->
             <?php }
             if ($action === 'edit' && $order_exists) {
@@ -811,6 +850,25 @@ if (is_array($address_footer_suffix)) {
                     </div>
                     <br>
                     <?php
+                }
+                ?>
+                <?php
+                // -----
+                //
+                // Give observers an opportunity to inject additional UI elements into the
+                // admin order edit view.
+                //
+                // Observers may append HTML output (e.g. buttons, informational blocks,
+                // or action controls) to the $extra_order_actions variable for display.
+                //
+                // Observer note:
+                // - Append content rather than overwrite existing output
+                // - Multiple observers may contribute content
+                //
+                $extra_order_actions = '';
+                $zco_notifier->notify('NOTIFY_ADMIN_ORDER_SPLIT_ORDER', $oID, $extra_order_actions);
+                if (!empty($extra_order_actions)) {
+                    echo $extra_order_actions;
                 }
                 ?>
 
@@ -1367,9 +1425,10 @@ if ($show_orders_weights === true) {
                                         }
                                     }
 
-//        $orders_query_numrows = '';
+                                    $orders_query_numrows = $orders_query_numrows ?? 0;
                                     $orders_split = new splitPageResults($_GET['page'], MAX_DISPLAY_SEARCH_RESULTS_ORDERS, $orders_query_raw, $orders_query_numrows);
                                     $orders = $db->Execute($orders_query_raw);
+
                                     while (!$orders->EOF) {
                                         if ((!isset($_GET['oID']) || (isset($_GET['oID']) && ($_GET['oID'] == $orders->fields['orders_id']))) && !isset($oInfo)) {
                                             $oInfo = new objectInfo($orders->fields);
@@ -1452,7 +1511,19 @@ if ($show_orders_weights === true) {
                                 </td>
 <?php } ?>
                                 <td class="dataTableContent text-center"><?= zen_datetime_short($orders->fields['date_purchased']) ?></td>
-                                <td class="dataTableContent text-right"><?= !empty($orders->fields['orders_status_name']) ? $orders->fields['orders_status_name'] : TEXT_INVALID_ORDER_STATUS ?></td>
+                                <td class="dataTableContent text-right">
+                                    <?php
+                                    $current_status_id = $orders->fields['orders_status'];
+                                    $status_name = !empty($orders->fields['orders_status_name']) ? $orders->fields['orders_status_name'] : TEXT_INVALID_ORDER_STATUS;
+                                    $status_color = isset($status_colors[$current_status_id]) ? $status_colors[$current_status_id] : '';
+
+                                    if (!empty($status_color)) {
+                                        echo '<span class="label status-color-code" style="background-color:' . $status_color . '; border-color:' . $status_color . ';">' . $status_name . '</span>';
+                                    } else {
+                                        echo $status_name;
+                                    }
+                                    ?>
+                                </td>
                                 <?php
                                      $order_comments = zen_output_string_protected(zen_get_orders_comments($orders->fields['orders_id']));
                                      if (!empty($order_comments)) {

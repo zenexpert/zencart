@@ -1,10 +1,10 @@
 #
 # * Main Zen Cart SQL Load for MySQL databases
 # * @access private
-# * @copyright Copyright 2003-2025 Zen Cart Development Team
+# * @copyright Copyright 2003-2026 Zen Cart Development Team
 # * @copyright Portions Copyright 2003 osCommerce
 # * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-# * @version $Id: piloujp 2025 Oct 22 Modified in v2.2.0 $
+# * @version $Id: Scott Wilson 2026 Mar 19 Modified in v2.2.1 $
 #
 
 ############ IMPORTANT INSTRUCTIONS ###############
@@ -101,6 +101,7 @@ CREATE TABLE admin (
   last_failed_attempt datetime NOT NULL default '0001-01-01 00:00:00',
   last_failed_ip varchar(45) NOT NULL default '',
   mfa TEXT DEFAULT NULL,
+  dashboard_layout TEXT NULL,
   PRIMARY KEY  (admin_id),
   KEY idx_admin_name_zen (admin_name),
   KEY idx_admin_email_zen (admin_email),
@@ -1344,6 +1345,7 @@ CREATE TABLE orders_status (
   orders_status_id int(11) NOT NULL default 0,
   language_id int(11) NOT NULL default 1,
   orders_status_name varchar(32) NOT NULL default '',
+  orders_status_color_code varchar(7) default NULL,
   sort_order int(11) NOT NULL default 0,
   PRIMARY KEY  (orders_status_id,language_id),
   KEY idx_orders_status_name_zen (orders_status_name)
@@ -2630,7 +2632,7 @@ INSERT INTO configuration (configuration_title, configuration_key, configuration
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Product Info - Image Large Suffix', 'IMAGE_SUFFIX_LARGE', '_LRG', 'Product Info Large Image Suffix<br />Default = _LRG', '4', '23', now());
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Product Info - Number of Additional Images per Row', 'IMAGES_AUTO_ADDED', '3', 'Product Info - Enter the number of additional images to display per row<br />Default = 3', '4', '25', now());
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) VALUES ('Additional Images Handling', 'ADDITIONAL_IMAGES_HANDLING', 'Database', 'Product Images can be handled in two ways: &quot;Database&quot; or &quot;Filename-Matching&quot;.<br> Use &quot;Database&quot; to allow additional images (any filename/filetype) to be added via the Admin Product Edit page.<br> Use &quot;Filename-Matching&quot; to autodetect additional images based on filename matching (legacy method) where we scan your images directory for files with names that <a href="https://docs.zen-cart.com/user/images/additional_images/" target="_blank">match the primary image filename plus suffixes</a>. This requires manually uploading images to your server via FTP or other methods, but avoids needing to assign images to products via the Admin page. <br> NOTE: a &quot;Scan Product Images To Database&quot; tool is available for installation via the Plugins Manager, and then accessible via the Tools menu.<br>The scanner creates database entries for all additional images that match legacy naming conventions, subsequently allowing all image management from the Product Edit page. The scanner does not modify the images, and can be run periodically to sync new images to the database as needed.', '4', '26', 'zen_cfg_select_option([\'Database\', \'Filename-Matching\'], ', NOW());
-INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) VALUES ('Additional Images filename matching pattern', 'ADDITIONAL_IMAGES_MODE', 'strict', '&quot;strict&quot; = always use &quot;_&quot; suffix<br>&quot;legacy&quot; = only use &quot;_&quot; suffix in subdirectories<br>(Before v210 legacy was the default)<br>Default = strict', '4', '27', 'zen_cfg_select_option(array(\'strict\', \'legacy\'), ', now());
+INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) VALUES ('Additional Images filename matching pattern', 'ADDITIONAL_IMAGES_MODE', 'strict', 'In Filename-Matching mode, you can use an &quot;_&quot; suffix in two formats:<br>&quot;strict&quot; = always use &quot;_&quot; suffix<br>&quot;legacy&quot; = only use &quot;_&quot; suffix in subdirectories<br>(Before v210 legacy was the default)<br>Default = strict', '4', '27', 'zen_cfg_select_option(array(\'strict\', \'legacy\'), ', now());
 
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Image - Product Listing Width', 'IMAGE_PRODUCT_LISTING_WIDTH', '100', 'Default = 100', 4, 40, now());
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Image - Product Listing Height', 'IMAGE_PRODUCT_LISTING_HEIGHT', '80', 'Default = 80', 4, 41, now());
@@ -2665,7 +2667,7 @@ INSERT INTO configuration (configuration_title, configuration_key, configuration
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Password Reset Token Valid For', 'PASSWORD_RESET_TOKEN_MINUTES_VALID', '60', 'How many minutes a password-reset token is valid for. Default: 60 minutes (1 hour). Allowed: 1-1440. Best is 60-120 minutes.', 5, 53, NULL, now(), '{\"error\":\"TEXT_HINT_PASSWORD_RESET_TOKEN_VALID_MINUTES\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":1, \"max_range\":1440}}}');
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) VALUES ('Customer Shop Status - View Shop and Prices', 'CUSTOMERS_APPROVAL', '0', 'Customer must be approved to shop<br />0= Not required<br />1= Must login to browse<br />2= May browse but no prices unless logged in<br />3= Showroom Only<br /><br />It is recommended that Option 2 be used for the purposes of Spiders if you wish customers to login to see prices.', '5', '55', 'zen_cfg_select_option(array(\'0\', \'1\', \'2\', \'3\'), ', now());
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, set_function) VALUES ('Account Activation Required?', 'CUSTOMERS_ACTIVATION_REQUIRED', 'false', 'Require customer-account activation? If set to <code>true</code>, an activation link is sent to the email address supplied by the customer. The customer must click on that link to activate their account.', 5, 60, NULL, now(), 'zen_cfg_select_option([\'true\', \'false\'], ');
-INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Account Activation Token Length', 'CUSTOMERS_ACTIVATION_TOKEN_LENGTH', '24', 'Number of characters in a generated account-activation token. Default is 24. Allowed: 12-100, but it affects the URL length, so 10-30 is most ideal', 5, 61, NULL, now(), '{\"error\":\"TEXT_HINT_CUSTOMERS_ACTIVATION_TOKEN_LENGTH\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":12, \"max_range\":100}}}');
+INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Account Activation Token Length', 'CUSTOMERS_ACTIVATION_TOKEN_LENGTH', '24', 'Number of characters in a generated account-activation token. Default is 24. Allowed: 12-100, but it affects the URL length, so 12-30 is most ideal', 5, 61, NULL, now(), '{\"error\":\"TEXT_HINT_CUSTOMERS_ACTIVATION_TOKEN_LENGTH\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":12, \"max_range\":100}}}');
 INSERT INTO configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, val_function) VALUES ('Account Activation Token Valid For', 'CUSTOMERS_ACTIVATION_TOKEN_MINUTES_VALID', '60', 'How many minutes an account-activation token is valid for. Default: 60 minutes (1 hour). Allowed: 1-1440. Best is 60-120 minutes.', 5, 62, NULL, now(), '{\"error\":\"TEXT_HINT_CUSTOMERS_ACTIVATION_TOKEN_VALID_MINUTES\",\"id\":\"FILTER_VALIDATE_INT\",\"options\":{\"options\":{\"min_range\":1, \"max_range\":1440}}}');
 
 #customer approval to shop
@@ -3306,10 +3308,10 @@ INSERT INTO layout_boxes (layout_template, layout_box_name, layout_box_status, l
 INSERT INTO layout_boxes (layout_template, layout_box_name, layout_box_status, layout_box_location, layout_box_sort_order, layout_box_sort_order_single, layout_box_status_single) VALUES ('responsive_classic', 'whats_new.php', 1, 0, 20, 0, 0);
 INSERT INTO layout_boxes (layout_template, layout_box_name, layout_box_status, layout_box_location, layout_box_sort_order, layout_box_sort_order_single, layout_box_status_single) VALUES ('responsive_classic', 'whos_online.php', 1, 1, 200, 200, 1);
 
-INSERT INTO orders_status VALUES ( '1', '1', 'Pending', 0);
-INSERT INTO orders_status VALUES ( '2', '1', 'Processing', 10);
-INSERT INTO orders_status VALUES ( '3', '1', 'Delivered', 20);
-INSERT INTO orders_status VALUES ( '4', '1', 'Update', 30);
+INSERT INTO orders_status (orders_status_id, language_id, orders_status_name, sort_order, orders_status_color_code) VALUES ( '1', '1', 'Pending', 0, '#f0ad4e');
+INSERT INTO orders_status (orders_status_id, language_id, orders_status_name, sort_order, orders_status_color_code) VALUES ( '2', '1', 'Processing', 10, '#5bc0de');
+INSERT INTO orders_status (orders_status_id, language_id, orders_status_name, sort_order, orders_status_color_code) VALUES ( '3', '1', 'Delivered', 20, '#5cb85c');
+INSERT INTO orders_status (orders_status_id, language_id, orders_status_name, sort_order, orders_status_color_code) VALUES ( '4', '1', 'Update', 30, '#ff00ff');
 
 INSERT INTO product_types VALUES (1, 'Product - General', 'product', '1', 'Y', '', now(), now());
 INSERT INTO product_types VALUES (2, 'Product - Music', 'product_music', '1', 'Y', '', now(), now());
@@ -3545,9 +3547,40 @@ INSERT INTO get_terms_to_filter VALUES ('record_company_id', 'TABLE_RECORD_COMPA
 # Dumping data for table project_version
 #
 
-INSERT INTO project_version (project_version_id, project_version_key, project_version_major, project_version_minor, project_version_patch1, project_version_patch1_source, project_version_patch2, project_version_patch2_source, project_version_comment, project_version_date_applied) VALUES (1, 'Zen-Cart Main', '2', '2.0-alpha', '', '', '', '', 'New Installation-v220-alpha', now());
-INSERT INTO project_version (project_version_id, project_version_key, project_version_major, project_version_minor, project_version_patch1, project_version_patch1_source, project_version_patch2, project_version_patch2_source, project_version_comment, project_version_date_applied) VALUES (2, 'Zen-Cart Database', '2', '2.0-alpha', '', '', '', '', 'New Installation-v220-alpha', now());
-INSERT INTO project_version_history (project_version_id, project_version_key, project_version_major, project_version_minor, project_version_patch, project_version_comment, project_version_date_applied) VALUES (1, 'Zen-Cart Main', '2', '2.0-alpha', '', 'New Installation-v220-alpha', now());
-INSERT INTO project_version_history (project_version_id, project_version_key, project_version_major, project_version_minor, project_version_patch, project_version_comment, project_version_date_applied) VALUES (2, 'Zen-Cart Database', '2', '2.0-alpha', '', 'New Installation-v220-alpha', now());
+
+SET @VERSION_MAJOR = '3';
+SET @VERSION_MINOR = '0.0-dev';
+SET @DB_MAJOR = '2';
+SET @DB_MINOR = '9.9';
+
+INSERT INTO project_version
+    (project_version_id, project_version_key, project_version_major, project_version_minor,
+    project_version_patch1, project_version_patch1_source, project_version_patch2,
+    project_version_patch2_source, project_version_comment, project_version_date_applied)
+VALUES
+    (1, 'Zen-Cart Main', @VERSION_MAJOR, @VERSION_MINOR, '', '', '', '',
+    CONCAT('New Installation-v', @VERSION_MAJOR, '.', @VERSION_MINOR), now());
+
+INSERT INTO project_version
+    (project_version_id, project_version_key, project_version_major, project_version_minor,
+    project_version_patch1, project_version_patch1_source, project_version_patch2,
+    project_version_patch2_source, project_version_comment, project_version_date_applied)
+VALUES
+    (2, 'Zen-Cart Database', @DB_MAJOR, @DB_MINOR, '', '', '', '',
+    CONCAT('New Installation-v', @DB_MAJOR, '.', @DB_MINOR), now());
+
+INSERT INTO project_version_history
+    (project_version_id, project_version_key, project_version_major, project_version_minor,
+    project_version_patch, project_version_comment, project_version_date_applied)
+VALUES
+    (1, 'Zen-Cart Main', @VERSION_MAJOR, @VERSION_MINOR, '',
+    CONCAT('New Installation-v', @VERSION_MAJOR, '.', @VERSION_MINOR), now());
+
+INSERT INTO project_version_history
+    (project_version_id, project_version_key, project_version_major, project_version_minor,
+    project_version_patch, project_version_comment, project_version_date_applied)
+VALUES
+    (2, 'Zen-Cart Database', @DB_MAJOR, @DB_MINOR, '',
+    CONCAT('New Installation-v', @DB_MAJOR, '.', @DB_MINOR), now());
 
 ##### End of SQL setup for Zen Cart.

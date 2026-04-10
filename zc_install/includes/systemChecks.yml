@@ -1,7 +1,7 @@
 #
-# @copyright Copyright 2003-2025 Zen Cart Development Team
+# @copyright Copyright 2003-2026 Zen Cart Development Team
 # @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-# @version $Id: DrByte 2025 Aug 15 Modified in v2.2.0 $
+# @version $Id: Scott Wilson 2026 Mar 19 Modified in v2.2.1 $
 #
 
 systemChecks:
@@ -39,24 +39,24 @@ systemChecks:
       checkPhpVersionMin:
         method: checkPhpVersion
         parameters:
-          version: 8.0.2
+          version: 8.3.0
           versionTest: ge
-          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MIN, '8.0') . PHP_EOL; ?>
+          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MIN, '8.3') . PHP_EOL; ?>
       checkPhpVersionMax:
         method: checkPhpVersion
         parameters:
           version: 8.6
           versionTest: lt
-          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MAX, '8.4.x') . PHP_EOL; ?>
+          localErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_MAX, '8.5.x') . PHP_EOL; ?>
   checkPhpVersionRecommendation:
     runLevel: always
     errorLevel: WARN
-    mainErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_RECOMMENDED, '8.4') . PHP_EOL; ?>
+    mainErrorText: <?php echo sprintf(TEXT_ERROR_PHP_VERSION_RECOMMENDED, '8.5') . PHP_EOL; ?>
     methods:
       checkPhpVersionRecommended:
         method: checkPhpVersion
         parameters:
-          version: 8.4.0
+          version: 8.5.0
           versionTest: ge
   checkZCversion:
     runLevel: always
@@ -303,6 +303,18 @@ systemChecks:
     methods:
       checkHttpsRequest:
 
+  checkDBVersion300:
+    runLevel: dbVersion
+    errorLevel: WARN
+    version: '3.0.0'
+    mainErrorText: <?php echo sprintf(TEXT_DB_VERSION_NOT_FOUND, 'v3.0.0') . PHP_EOL; ?>
+    methods:
+      dbVersionChecker:
+        parameters:
+          # TODO: The following checkType is merely a placeholder copied from 220 below as a stub. Update with an actual db change that can be inspected, and remove this comment.
+          - checkType: configKeyExists
+            keyName: PASSWORD_RESET_TOKEN_LENGTH
+
   checkDBVersion220:
     runLevel: dbVersion
     errorLevel: WARN
@@ -329,6 +341,10 @@ systemChecks:
           - checkType: fieldSchema
             tableName: tax_rates_description
             fieldName: tax_description
+            fieldCheck: Exists
+          - checkType: fieldSchema
+            tableName: orders_status
+            fieldName: orders_status_color_code
             fieldCheck: Exists
 
   checkDBVersion210:

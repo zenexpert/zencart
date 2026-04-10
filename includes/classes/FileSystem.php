@@ -1,18 +1,16 @@
 <?php
 /**
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 namespace Zencart\FileSystem;
-
-use Illuminate\Filesystem\Filesystem as IlluminateFilesystem;
 
 /**
  * @since ZC v1.5.7
  */
-class FileSystem extends IlluminateFilesystem
+class FileSystem
 {
     /**
      * @since ZC v1.5.7
@@ -235,5 +233,36 @@ class FileSystem extends IlluminateFilesystem
             return str_replace('\\', '/', realpath($path));
         }
         return realpath($path);
+    }
+
+    /**
+     * @since ZC v2.2.0
+     */
+    public function deleteDirectory(string $directory): bool
+    {
+        if (!is_dir($directory)) {
+            return false;
+        }
+
+        $items = scandir($directory);
+        if ($items === false) {
+            return false;
+        }
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $directory . DIRECTORY_SEPARATOR . $item;
+            if (is_dir($path)) {
+                $this->deleteDirectory($path);
+                continue;
+            }
+
+            @unlink($path);
+        }
+
+        return @rmdir($directory);
     }
 }

@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: piloujp 2025 Oct 21 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
 /**
@@ -569,9 +569,12 @@ function zen_get_language_name($lookup)
  */
 function zen_get_configuration_group_value($lookup)
 {
-    // @todo could also do this as a dynamic scope
-    $r = \App\Models\ConfigurationGroup::select('configuration_group_title')->where('configuration_group_id', '=', $lookup)->first();
-    return $r['configuration_group_title'] ?? (int)$lookup;
+    global $db;
+    $r = $db->Execute(
+        "SELECT configuration_group_title FROM " . TABLE_CONFIGURATION_GROUP .
+        " WHERE configuration_group_id = " . (int)$lookup . " LIMIT 1"
+    );
+    return $r->EOF ? (int)$lookup : $r->fields['configuration_group_title'];
 }
 
 
@@ -771,9 +774,11 @@ function zen_getOrdersStatuses(bool $keyed = false): array
     global $db;
     $orders_statuses = [];
     $orders_status_array = [];
-    $orders_status_query = $db->Execute('SELECT orders_status_id, orders_status_name FROM ' . TABLE_ORDERS_STATUS . '
+    $orders_status_colors = [];
+    $orders_status_query = $db->Execute('SELECT orders_status_id, orders_status_name, orders_status_color_code FROM ' . TABLE_ORDERS_STATUS . '
                                  WHERE language_id = ' . (int)$_SESSION['languages_id'] . ' ORDER BY sort_order, orders_status_id');
     foreach ($orders_status_query as $next_status) {
+        $orders_status_colors[$next_status['orders_status_id']] = $next_status['orders_status_color_code'];
         if (!$keyed) {
             $orders_statuses[] = [
                 'id' => $next_status['orders_status_id'],
@@ -785,13 +790,14 @@ function zen_getOrdersStatuses(bool $keyed = false): array
             $orders_status_array[$next_status['orders_status_id']] = $next_status['orders_status_name'];
         }
     }
-    return ['orders_statuses' => $orders_statuses, 'orders_status_array' => $orders_status_array,];
+    return ['orders_statuses' => $orders_statuses, 'orders_status_array' => $orders_status_array, 'orders_status_colors' => $orders_status_colors,];
 }
 
 /**
  * @since ZC v1.5.8
  */
-function zen_get_customer_email_from_id($cid) {
+function zen_get_customer_email_from_id($cid)
+{
    global $db;
    $query = $db->Execute("SELECT customers_email_address FROM " . TABLE_CUSTOMERS . " WHERE customers_id = " . (int)$cid);
    if ($query->EOF) return '';
