@@ -4,9 +4,9 @@
  *
  * Functions to support plugin interactivity.
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 25 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Mar 17 Modified in v2.2.1 $
  *
  * @since ZC v1.5.3
  */
@@ -70,6 +70,13 @@ function plugin_version_check_for_updates(mixed $plugin_file_id = 0, string $ver
 
     if (!is_array($data)) {
         $data = json_decode($data, true);
+    }
+
+    if (!is_array($data) || isset($data['error']) || !isset($data[0])) {
+        if (LOG_PLUGIN_VERSIONCHECK_FAILURES) {
+            error_log('Version Server response error when checking plugin versions: ' . print_r(!empty($data) ? $data : 'null', true));
+        }
+        return false;
     }
 
     if (strcmp($data[0]['latest_plugin_version'], $version_string_to_compare) > 0) {

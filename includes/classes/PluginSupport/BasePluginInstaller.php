@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 29 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 13 Modified in v2.2.1 $
  */
 
 namespace Zencart\PluginSupport;
@@ -30,8 +30,11 @@ class BasePluginInstaller
      */
     public function processInstall($pluginKey, $version): bool
     {
+        if (empty($pluginKey) || empty($version)) {
+            return false;
+        }
         $this->pluginDir = DIR_FS_CATALOG . 'zc_plugins/' . $pluginKey . '/' . $version;
-        $this->loadInstallerLanguageFile('main.php', $this->pluginDir);
+        $this->loadInstallerLanguageFile('main.php');
         $this->pluginInstaller->setVersions($this->pluginDir, $pluginKey, $version);
         $this->pluginInstaller->executeInstallers($this->pluginDir);
         if ($this->errorContainer->hasErrors()) {
@@ -46,8 +49,11 @@ class BasePluginInstaller
      */
     public function processUninstall($pluginKey, $version): bool
     {
+        if (empty($pluginKey) || empty($version)) {
+            return false;
+        }
         $this->pluginDir = DIR_FS_CATALOG . 'zc_plugins/' . $pluginKey . '/' . $version;
-        $this->loadInstallerLanguageFile('main.php', $this->pluginDir);
+        $this->loadInstallerLanguageFile('main.php');
         $this->setPluginVersionStatus($pluginKey, '', PluginStatus::NOT_INSTALLED);
         $this->pluginInstaller->setVersions($this->pluginDir, $pluginKey, $version);
         $this->pluginInstaller->executeUninstallers($this->pluginDir);
@@ -62,8 +68,11 @@ class BasePluginInstaller
      */
     public function processUpgrade($pluginKey, $version, $oldVersion): bool
     {
+        if (empty($pluginKey) || empty($version) || empty($oldVersion)) {
+            return false;
+        }
         $this->pluginDir = DIR_FS_CATALOG . 'zc_plugins/' . $pluginKey . '/' . $version;
-        $this->loadInstallerLanguageFile('main.php', $this->pluginDir);
+        $this->loadInstallerLanguageFile('main.php');
         $this->pluginInstaller->setVersions($this->pluginDir, $pluginKey, $version, $oldVersion);
         $this->pluginInstaller->executeUpgraders($this->pluginDir, $oldVersion);
         if ($this->errorContainer->hasErrors()) {
@@ -95,11 +104,14 @@ class BasePluginInstaller
      */
     protected function setPluginVersionStatus($pluginKey, $version, $status): void
     {
+        if (empty($pluginKey)) {
+            return;
+        }
         $sql = "UPDATE " . TABLE_PLUGIN_CONTROL . " SET status = :status:, version = :version: WHERE unique_key = :uniqueKey:";
         $sql = $this->dbConn->bindVars($sql, ':status:', $status, 'integer');
         $sql = $this->dbConn->bindVars($sql, ':uniqueKey:', $pluginKey, 'string');
         $sql = $this->dbConn->bindVars($sql, ':version:', $version, 'string');
-        $this->dbConn->execute($sql);
+        $this->dbConn->Execute($sql);
     }
 
     /**

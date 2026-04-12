@@ -1,14 +1,14 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Sep 18 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Mar 17 Modified in v2.2.1 $
  */
 
 namespace Zencart\Traits;
 
-use App\Models\PluginControl;
-use App\Models\PluginControlVersion;
+use Zencart\DbRepositories\PluginControlRepository;
+use Zencart\DbRepositories\PluginControlVersionRepository;
 use Zencart\PageLoader\PageLoader;
 use Zencart\PluginManager\PluginManager;
 
@@ -25,8 +25,8 @@ trait InteractsWithPlugins
     /** @var string catalog, admin, or Installer */
     protected string $zcPluginContext;
 
-    /** @var string working directory of currently installed version */
-    protected string $pluginManagerInstalledVersionDirectory;
+    /** @var ?string working directory of currently installed version; null if not installed */
+    protected ?string $pluginManagerInstalledVersionDirectory;
 
     /** @var string will be null if no 'catalog' dir present (no catalog features) */
     protected string $zcPluginCatalogPath;
@@ -55,8 +55,14 @@ trait InteractsWithPlugins
         $this->zcPluginPath = str_replace('//', '/', DIR_FS_CATALOG . '/zc_plugins/' . $this->zcPluginDirName . '/' . $this->zcPluginVersionDir . '/');
         $this->isAZcPlugin = \file_exists($this->zcPluginPath . 'manifest.php');
 
-        $plugin_manager = new PluginManager(new PluginControl(), new PluginControlVersion());
+        global $db;
+        $plugin_manager = new PluginManager(new PluginControlRepository($db), new PluginControlVersionRepository($db));
         $this->pluginManagerInstalledVersionDirectory = $plugin_manager->getPluginVersionDirectory($this->zcPluginDirName, $plugin_manager->getInstalledPlugins());
+
+        if ($this->pluginManagerInstalledVersionDirectory === null) {
+            // plugin not installed, so we won't be able to determine the installed version's path or whether we're in the context of an installed version's files or not, so just return here.
+            return;
+        }
 
         $installedPluginPath = rtrim(str_replace(DIR_FS_CATALOG, '', $this->pluginManagerInstalledVersionDirectory), '/');
         if ($this->zcPluginContext === 'catalog') {

@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright 2003-2024 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: lat9 2024 Jul 15 Modified in v2.1.0-alpha1 $
+ * @version $Id: DrByte 2026 Feb 19 Modified in v2.2.1 $
  */
 
-if (PHP_VERSION_ID < 80002) {
-    die('Sorry, this version of Zen Cart requires PHP 8.0.2 or greater. <a href="https://www.zen-cart.com/requirements" rel="noopener" target="_blank">Please refer to our website</a> for the PHP versions supported.');
+if (PHP_VERSION_ID < 80300) {
+    die('Sorry, this version of Zen Cart requires PHP 8.3 or greater. <a href="https://www.zen-cart.com/requirements" rel="noopener" target="_blank">Please refer to our website</a> for the PHP versions supported.');
 }
 
 /**

@@ -2,7 +2,7 @@
 /**
  * polyfills to accommodate older/newer PHP versions, adapted from https://github.com/symfony/polyfill/
  * @copyright Portions (c) 2015-present Fabien Potencier <fabien@symfony.com>
- * @version $Id: DrByte 2025 Sep 19 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Mar 10 Modified in v2.2.1 $
  * @since ZC v1.5.7c
  */
 
@@ -13,6 +13,12 @@
  * - /admin/includes/extra_configures/php_polyfills.php
  * - /includes/extra_configures/php_polyfills.php
  */
+
+/**
+ * MbString polyfill
+ */
+require DIR_FS_CATALOG . DIR_WS_CLASSES . 'vendors/polyfill-mbstring/Mbstring.php';
+require DIR_FS_CATALOG . DIR_WS_CLASSES . 'vendors/polyfill-mbstring/bootstrap80.php';
 
 /* LICENSE
  *

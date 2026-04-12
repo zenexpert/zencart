@@ -1,9 +1,9 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @author inspired from sales_report_graphs.php,v 0.01 2002/11/27 19:02:22 cwi Exp  Released under the GNU General Public License $
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 03 Modified in v2.2.0 $
+ * @version $Id: torvista 2026 Mar 04 Modified in v2.2.1 $
  */
 require 'includes/application_top.php';
 
@@ -254,7 +254,7 @@ for ($i = 0; $i < $report->size; $i++) {
                               echo $zcDate->output(DATE_FORMAT_SHORT, $report->info[$i]['startDates']);
                               break;
                           case statsSalesReportGraph::WEEKLY_VIEW:
-                              echo $zcDate->output(DATE_FORMAT_SHORT, $report->info[$i]['startDates']) . " - " . $zcDate->output(DATE_FORMAT_SHORT, mktime(0, 0, 0, date('m', $report->info[$i]['endDates']), date('d', $report->info[$i]['endDates']) - 1, date('Y', $report->info[$i]['endDates'])));
+                              echo $zcDate->output(DATE_FORMAT_SHORT, $report->info[$i]['startDates']) . " - " . $zcDate->output(DATE_FORMAT_SHORT, mktime(0, 0, 0, (int)date('m', $report->info[$i]['endDates']), date('d', $report->info[$i]['endDates']) - 1, (int)date('Y', $report->info[$i]['endDates'])));
                               break;
                           case statsSalesReportGraph::MONTHLY_VIEW:
                               echo $zcDate->output(DATE_FORMAT_SHORT_NO_DAY, $report->info[$i]['startDates']);

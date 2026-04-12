@@ -3,9 +3,9 @@
  * Admin session timeout warning alerter
  * Prompts to extend login session after 2/3 of the allowed session time has expired without mouse activity or form submission.
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: torvista 2025 Mar 16 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Mar 05 Modified in v2.2.1 $
  */
 
 if (!defined('TEXT_TIMEOUT_WARNING')) define('TEXT_TIMEOUT_WARNING', '**WARNING**');
@@ -34,12 +34,12 @@ if ((int)$timeoutAfter < 30) $timeoutAfter = 1440;
 //$timeoutAfter = 15;
 //$mouseDebounce = 10;
 ?>
-<style title="jAlert">
+<style id="jAlert-css">
 .jAlert {font-size: 1.5rem;}
 .ja_btn {font-size: 1.5rem; padding: 15px !important;}
 </style>
-<script src="includes/javascript/jAlert.min.js"></script>
-<script src="includes/javascript/jTimeout.min.js"></script>
+<script src="<?= zen_add_filemtime('includes/javascript/jAlert.min.js') ?>"></script>
+<script src="<?= zen_add_filemtime('includes/javascript/jTimeout.min.js') ?>"></script>
 <script title="jTimeout-Init">
 jQuery(function(){
    jQuery.jTimeout(
@@ -60,6 +60,7 @@ jQuery(function(){
             'title': '<?php echo addslashes(TEXT_TIMEOUT_ARE_YOU_STILL_THERE); ?>',
             'content': '<b><?php echo addslashes(TEXT_TIMEOUT_WILL_LOGOUT_SOON); ?> <?php echo addslashes(TEXT_TIMEOUT_TIME_REMAINING); ?> <span class="jTimeout_Countdown">' + seconds + '</span> <?php echo addslashes(TEXT_TIMEOUT_SECONDS); ?></b>',
             'theme': 'red',
+            'noPadContent': false, // Explicitly enable padding
             'closeBtn': false,
             'onOpen': function (alert) {
                 timeout.startPriorCountdown(alert.find('.jTimeout_Countdown'));
@@ -94,6 +95,7 @@ jQuery(function(){
             'title': '<?php echo addslashes(TEXT_TIMEOUT_TIMED_OUT_TITLE); ?>',
             'content': '<b><?php echo addslashes(TEXT_TIMEOUT_TIMED_OUT_MESSAGE); ?></b>',
             'theme': 'red',
+            'noPadContent': false, // Explicitly enable padding
             'btns': {
                 'text': '<?php echo addslashes(TEXT_TIMEOUT_LOGIN_AGAIN); ?>',
                 'href': timeout.options.loginUrl,

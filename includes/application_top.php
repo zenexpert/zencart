@@ -5,14 +5,14 @@
  * Initializes common classes & methods. Controlled by an array which describes
  * the elements to be initialised and the order in which that happens.
  * see  {@link  https://docs.zen-cart.com/dev/code/init_system/} for more details.
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 22 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
-use App\Models\PluginControl;
-use App\Models\PluginControlVersion;
+use Zencart\DbRepositories\PluginControlRepository;
+use Zencart\DbRepositories\PluginControlVersionRepository;
 use Zencart\FileSystem\FileSystem;
 use Zencart\PluginManager\PluginManager;
 use Zencart\InitSystem\InitSystem;
@@ -122,7 +122,85 @@ if (!$contaminated) {
         }
     }
 }
+
+/**
+ * reject long query strings
+ * reject suspicious non-ASCII characters
+ * allows standard printable ASCII but flags common exploit symbols
+ */
+if (!$contaminated && !empty($_SERVER['QUERY_STRING'])) {
+
+    // define pages that need long query strings
+    $long_query_pages = ['checkout_process', 'checkout_payment', 'checkout', 'checkout_one', 'checkout_one_confirmation'];
+
+    // set a dynamic length limit
+    // allow 2048 characters for payment pages, but keep the strict 256 for everything else
+    $max_length = in_array($_GET['main_page'] ?? '', $long_query_pages) ? 2048 : 256;
+
+    // cap query string length (prevents buffer overflow/fuzzing)
+    if (strlen($_SERVER['QUERY_STRING']) > $max_length) {
+        $contaminated = true;
+    }
+
+    // check for the specific '¤' (%C2%A4) or characters outside standard range
+    // allow basic printable ASCII but specifically target high-bit "junk"
+    if (preg_match('/[\x00-\x1F\x7F-\xFF]/', $_SERVER['QUERY_STRING'])) {
+        $contaminated = true;
+    }
+}
+
+/**
+ * reject parameter pollution (any repeated keys)
+ * scans the raw query string for any key appearing more than twice.
+ */
+if (!empty($_SERVER['QUERY_STRING'])) {
+    // break the query string into individual "key=value" pairs
+    $pairs = explode('&', $_SERVER['QUERY_STRING']);
+    $keys = [];
+
+    foreach ($pairs as $pair) {
+        // get just the part before the "="
+        $parts = explode('=', $pair, 2);
+
+        // skip if the pair is empty (e.g., &&) or the key is missing
+        if (empty($parts[0])) {
+            continue;
+        }
+
+        $key = strtolower($parts[0]);
+        $keys[] = $key;
+    }
+
+    // count occurrences of each key
+    $counts = array_count_values($keys);
+    foreach ($counts as $key => $count) {
+        // allow one duplication (possibly accidental), more than 2 is not accidental
+        if ($count > 2) {
+            $contaminated = true;
+            break;
+        }
+    }
+}
+
+/**
+ * reject crawler 'BUY NOW' attempts
+ * crawlers should never be adding items to the cart.
+ */
+if (!$contaminated && isset($_GET['action']) && $_GET['action'] === 'buy_now') {
+    $isCrawlerUA = (
+        empty($_SERVER['HTTP_USER_AGENT']) ||
+        preg_match('/bot|crawl|spider|facebook|meta|externalagent/i', $_SERVER['HTTP_USER_AGENT'])
+    );
+
+    $hasInternalReferer = (!empty($_SERVER['HTTP_REFERER']) && parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) === $_SERVER['HTTP_HOST']);
+
+    if ($isCrawlerUA || !$hasInternalReferer) {
+        $contaminated = true;
+    }
+}
+
 unset($paramsToCheck, $paramsToAvoid, $key);
+
 if ($contaminated) {
     header('HTTP/1.1 406 Not Acceptable');
     exit(0);
@@ -152,7 +230,7 @@ define('PAGE_PARSE_START_TIME', microtime());
  * This is intended to run before any dependencies are required
  * See https://www.zen-cart.com/requirements or run zc_install to see actual requirements!
  */
-if (PHP_VERSION_ID < 80002) {
+if (PHP_VERSION_ID < 80300) {
     require 'includes/templates/template_default/templates/tpl_zc_phpupgrade_default.php';
     exit(0);
 }
@@ -238,9 +316,6 @@ if (file_exists('includes/defined_paths.php')) {
     exit;
 }
 
-if (file_exists($file = DIR_FS_CATALOG . 'laravel/vendor/symfony/polyfill-mbstring/bootstrap80.php')) {
-    include $file;
-}
 require DIR_FS_CATALOG . DIR_WS_FUNCTIONS . 'php_polyfills.php';
 require DIR_FS_CATALOG . DIR_WS_FUNCTIONS . 'zen_define_default.php';
 
@@ -278,7 +353,6 @@ if (!defined('ZENCART_TESTFRAMEWORK_RUNNING')) {
  * psr-4 autoloading
  */
 require DIR_FS_CATALOG . DIR_WS_CLASSES . 'vendors/AuraAutoload/src/Loader.php';
-require DIR_FS_CATALOG . 'laravel/vendor/autoload.php';
 $psr4Autoloader = new \Aura\Autoload\Loader;
 $psr4Autoloader->register();
 require('includes/psr4Autoload.php');
@@ -292,9 +366,7 @@ $zc_cache = new cache();
 require 'includes/init_includes/init_file_db_names.php';
 require 'includes/init_includes/init_database.php';
 
-require DIR_FS_CATALOG . 'includes/application_laravel.php';
-
-$pluginManager = new PluginManager(new PluginControl(), new \App\Models\PluginControlVersion());
+$pluginManager = new PluginManager(new PluginControlRepository($db), new PluginControlVersionRepository($db));
 $installedPlugins = $pluginManager->getInstalledPlugins();
 
 $fs = new FileSystem;

@@ -2,10 +2,10 @@
 /**
  * reviews Write
  *
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: ZenExpert 2026 Jan 12 Modified in v2.2.0-alpha $
+ * @version $Id: ZenExpert 2026 Jan 12 Modified in v2.2.0-alpha and then by torvista in March 2026 in v2.2.1 $
  */
 /**
  * Header code file for product reviews "write" page
@@ -84,7 +84,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
 
       $db->Execute($sql);
 
-      $insert_id = $db->Insert_ID();
+      $insert_id = $db->insert_ID();
 
       $zco_notifier->notify('NOTIFY_REVIEW_INSERTED_DURING_WRITE_REVIEW');
 

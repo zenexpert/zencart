@@ -1,13 +1,13 @@
 <?php
 /**
- * @copyright Copyright 2003-2025 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: DrByte 2025 Oct 22 Modified in v2.2.0 $
+ * @version $Id: DrByte 2026 Feb 26 Modified in v2.2.1 $
  */
 
-use App\Models\PluginControl;
-use App\Models\PluginControlVersion;
+use Zencart\DbRepositories\PluginControlRepository;
+use Zencart\DbRepositories\PluginControlVersionRepository;
 use Zencart\FileSystem\FileSystem;
 use Zencart\PluginManager\PluginManager;
 use Zencart\PageLoader\PageLoader;
@@ -71,7 +71,7 @@ if ((defined('DEBUG_AUTOLOAD') && DEBUG_AUTOLOAD === true) || (defined('STRICT_E
  * This is intended to run before any dependencies are required
  * See https://www.zen-cart.com/requirements or run zc_install to see actual requirements!
  */
-if (PHP_VERSION_ID < 80002) {
+if (PHP_VERSION_ID < 80300) {
     // redirect to catalog to display the PHP version compatibility message
     chdir(realpath(__DIR__ . '/../'));
     require 'includes/application_top.php';
@@ -125,9 +125,6 @@ if (file_exists('includes/defined_paths.php')) {
     exit;
 }
 
-if (file_exists($file = DIR_FS_CATALOG . 'laravel/vendor/symfony/polyfill-mbstring/bootstrap80.php')) {
-    include $file;
-}
 require DIR_FS_CATALOG . DIR_WS_FUNCTIONS . 'php_polyfills.php';
 require DIR_FS_CATALOG . DIR_WS_FUNCTIONS . 'zen_define_default.php';
 
@@ -164,7 +161,6 @@ zen_define_default('DIR_WS_TEMPLATES', DIR_WS_INCLUDES . 'templates/');
  * psr-4 autoloading
  */
 require DIR_FS_CATALOG . DIR_WS_CLASSES . 'vendors/AuraAutoload/src/Loader.php';
-require DIR_FS_CATALOG . 'laravel/vendor/autoload.php';
 $psr4Autoloader = new \Aura\Autoload\Loader;
 $psr4Autoloader->register();
 require DIR_FS_CATALOG . 'includes/psr4Autoload.php';
@@ -173,9 +169,8 @@ require DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.base.php';
 require 'includes/classes/AdminRequestSanitizer.php';
 require 'includes/init_includes/init_file_db_names.php';
 require 'includes/init_includes/init_database.php';
-require (DIR_FS_CATALOG . 'includes/application_laravel.php');
 
-$pluginManager = new PluginManager(new PluginControl, new PluginControlVersion);
+$pluginManager = new PluginManager(new PluginControlRepository($db), new PluginControlVersionRepository($db));
 $installedPlugins = $pluginManager->getInstalledPlugins();
 
 $pageLoader = PageLoader::getInstance();
