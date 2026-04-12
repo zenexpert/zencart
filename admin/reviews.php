@@ -148,7 +148,7 @@ if (!empty($action)) {
           <div class="form-group">
                 <?php echo zen_draw_label(ENTRY_REVIEW_TITLE, 'reviews_title', 'class="control-label col-sm-3"'); ?>
                 <div class="col-sm-9 col-md-6">
-                    <?php echo zen_draw_input_field('reviews_title', (!empty($rInfo->reviews_title) ? htmlspecialchars(stripslashes($rInfo->reviews_title), ENT_COMPAT, CHARSET, TRUE) : ''), 'class="form-control" id="reviews_title"'); ?>
+                    <?php echo zen_draw_input_field('reviews_title', (!empty($rInfo->reviews_title) ? htmlspecialchars(stripslashes($rInfo->reviews_title), ENT_COMPAT, CHARSET, TRUE) : ''), zen_set_field_length(TABLE_REVIEWS_DESCRIPTION, 'reviews_title', '128') . 'class="form-control" id="reviews_title"'); ?>
                 </div>
             </div>
             <div class="form-group">

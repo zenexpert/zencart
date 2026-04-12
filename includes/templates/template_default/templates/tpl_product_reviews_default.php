@@ -67,7 +67,7 @@
 
 <div class="productReviewsDefaultProductMainContent content">
     <?php if(!empty($reviews['reviewsTitle'])) { ?>
-        <h6><?php echo $reviews['reviewsTitle']; ?></h6>
+        <h6><?php echo zen_output_string_protected(stripslashes($reviews['reviewsTitle'])); ?></h6>
     <?php } ?>
     <?php echo zen_trunc_string(zen_output_string_protected(stripslashes($reviews['reviewsText'])), (int)MAX_PREVIEW); ?>
 </div>

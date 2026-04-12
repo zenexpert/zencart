@@ -49,7 +49,7 @@ $error = false;
 if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
   $rating = (int)$_POST['rating'];
   $review_text = zen_clean_html($_POST['review_text']);
-  $review_title = zen_clean_html($_POST['review_title']);
+  $review_title = zen_clean_html($_POST['review_title'] ?? '');
   $antiSpam = !empty($_POST[$antiSpamFieldName]) ? 'spam' : '';
   $zco_notifier->notify('NOTIFY_REVIEWS_WRITE_CAPTCHA_CHECK');
 
@@ -89,7 +89,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
       $zco_notifier->notify('NOTIFY_REVIEW_INSERTED_DURING_WRITE_REVIEW');
 
       $sql = "INSERT INTO " . TABLE_REVIEWS_DESCRIPTION . " (reviews_id, languages_id, reviews_text, reviews_title)
-              VALUES (:insertID, :languagesID, :reviewText)";
+              VALUES (:insertID, :languagesID, :reviewText, :reviewsTitle)";
 
       $sql = $db->bindVars($sql, ':insertID', $insert_id, 'integer');
       $sql = $db->bindVars($sql, ':languagesID', $_SESSION['languages_id'], 'integer');

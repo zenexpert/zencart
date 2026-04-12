@@ -41,7 +41,7 @@
 
 <div class="content">
     <?php if(!empty($reviews->fields['reviews_title'])) { ?>
-        <h6><?php echo $reviews->fields['reviews_title']; ?></h6>
+        <h6><?php echo zen_output_string_protected(stripslashes($reviews->fields['reviews_title'])); ?></h6>
     <?php } ?>
     <?php echo zen_trunc_string(nl2br(zen_output_string_protected(stripslashes($reviews->fields['reviews_text']))), (int)MAX_PREVIEW); ?>
 </div>

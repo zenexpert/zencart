@@ -62,7 +62,7 @@
 </div>
 
     <label id="inputAreaReviews" for="review-title"><?php echo TEXT_REVIEW_TITLE; ?></label>
-    <?php echo zen_draw_input_field('review_title', $review_title, 'id="review-title"'); ?>
+    <?php echo zen_draw_input_field('review_title', $review_title, zen_set_field_length(TABLE_REVIEWS_DESCRIPTION, 'reviews_title', '128') . 'id="review-title"'); ?>
     <br>
 
 <label id="textAreaReviews" for="review-text"><?php echo SUB_TITLE_REVIEW; ?></label>

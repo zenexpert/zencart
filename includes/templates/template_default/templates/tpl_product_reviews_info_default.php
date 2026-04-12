@@ -51,7 +51,7 @@
 
 <div id="reviewsInfoDefaultMainContent" class="content">
     <?php if(!empty($review_info->fields['reviews_title'])) { ?>
-        <h6><?php echo $review_info->fields['reviews_title']; ?></h6>
+        <h6><?php echo zen_output_string_protected(stripslashes($review_info->fields['reviews_title'])); ?></h6>
     <?php } ?>
     <?php echo nl2br(zen_output_string_protected(stripslashes($review_info->fields['reviews_text']))); ?>
 </div>
